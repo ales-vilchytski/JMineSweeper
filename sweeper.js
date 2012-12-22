@@ -98,7 +98,7 @@ function Sweeper(_x, _y, _mines, _ui) {
 	var stateManager = new FSM(State.BEGIN);
 	this.getStateManager = function() { return stateManager; }
 			
-	var interval;
+	var timer;
 	var seconds = 0;
 	this.getSeconds = function() { return seconds; }
 		
@@ -110,15 +110,19 @@ function Sweeper(_x, _y, _mines, _ui) {
 					ui.refreshCell(cells[i][j], i, j);		
 				}
 			}
-			clearInterval(interval);		
+			timer.cancel();		
 		};
 		stateManager.addTransition(State.RUNNING, State.GAME_OVER, finishGame);
 		stateManager.addTransition(State.BEGIN, State.GAME_OVER, finishGame);
 		
 		stateManager.addTransition(State.BEGIN, State.RUNNING, 
 			function() {
-				interval = setInterval(function() { ui.refreshSeconds(++seconds); }, 1000);
-		});
+				timer = java.util.Timer(true) //daemon
+				timer.schedule(new Packages.by.ales.minesweeper.scripting.RunnableTimerTask(
+					function() {
+						ui.refreshSeconds(++seconds); 
+					}), 0, 1000);
+			});
 		stateManager.addTransition(State.RUNNING, State.FINISH, 
 			function() {
 				finishGame();
@@ -212,8 +216,8 @@ function Sweeper(_x, _y, _mines, _ui) {
 	ui.show(cells, minesRemained, seconds);
 	
 	this.dispose = function(x, y, mines) {
-		if (interval) {
-			clearInterval(interval);
+		if (timer) {
+			timer.cancel();
 		}
 	};
 	

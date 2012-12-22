@@ -24,11 +24,24 @@ with(SwingGui) {
 	
 	frame.setJMenuBar(menuBar);
 	frame.setLayout(new GridLayout(3,3));
+
 	var ui = new UI();
-	var sweeper = new Sweeper(3,3, 2, ui);
+	var sweeper = new Sweeper(5, 5, 5, ui);
+
+	
+	var secMenu = new JButton('');
+	menuBar.add(secMenu);
+	new Timer(500, function() {
+		secMenu.setText(sweeper.getSeconds());
+		secMenu.repaint();
+	}).start();
+	
 	
 	frame.setContentPane(ui.getPanel());
 	
+	
+	
+	frame.setSize(640, 480);
 	frame.show();
 }
 

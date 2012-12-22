@@ -23,42 +23,49 @@ function UI() {
 			for (var i in cells) {
 				_cells.push([]);
 				for (var j in cells[i]) {
-					var button = new JButton(cells[i][j].content);
+					var button = new JButton();
 					panel.add(button);
 					_cells[i].push(button);
 					
-					//add callbacks to provide commands to sweeper
+					var listener = function(_i, _j) {
+						return function(mouseEvent) {
+							if (SwingUtilities.isRightMouseButton(mouseEvent)) {
+								sweeper.markCell(_i, _j);
+							} else if (SwingUtilities.isLeftMouseButton(mouseEvent)) {
+								sweeper.clickCell(_i, _j);
+							}
+						};
+					}
+					button.addMouseListener(listener(i, j));
 				}
 			}
 		}
-		//this.refreshMinesRemained(minesRemained);
-		//this.refreshSeconds(seconds);
+		this.refreshMinesRemained(minesRemained);
+		this.refreshSeconds(seconds);
 	};
 	
 	this.refreshCell = function(cell, x, y) {
 		//reusable local functions
 		{
 			var markFlag = function() {
-				$('#'+rh).html('<img src="img/flag.png"></img>');
+				_cells[x][y].setText('flag');
 			};
 			var showMine = function() {
-				$('#'+rh).html('<img src="img/mine.png"></img>');
+				_cells[x][y].setText('mine');
 			};
 			var setClickedBackground = function() {
-				$('#'+rh).attr('class', 'clickedCell');
+				//_cells[x][y].setText('_');
 			};
 		}
 		//end reusable local functions
 		
-		var rh = UI.XYToCellId(x, y);
 		var state = this.getSweeper().getStateManager().getCurrentState();
 		if (!cell.clicked) {
-			var html = '';
 			switch (cell.mark) {
 				case Mark.FLAG: 
 					if (state === State.GAME_OVER && 
 						cell.content !== Content.MINE) {	//draw cross
-						$('#'+rh).html('<img src="img/cross.png"></img>');
+						_cells[x][y].setText('X');
 					} else {
 						markFlag();
 					}
@@ -72,7 +79,7 @@ function UI() {
 							   cell.content === Content.MINE) {
 						markFlag();
 					} else {
-						$('#'+rh).html('<img src="img/question.png"></img>');
+						_cells[x][y].setText('?');
 					}
 					break;
 				case Mark.NONE:
@@ -84,7 +91,7 @@ function UI() {
 						cell.content === Content.MINE) {
 						markFlag();
 					} else {
-						$('#'+rh).html('');
+						_cells[x][y].setText('');
 					}
 					break;
 				default: 
@@ -94,62 +101,62 @@ function UI() {
 			switch (cell.content) {
 				case Content.MINE:
 					showMine();
-					$('#'+rh).css('background-color', 'red');
+					//$('#'+rh).css('background-color', 'red');
 					return;
 				case Content.NONE:
-					$('#'+rh).html('');
+					_cells[x][y].setText('');
 					break;
 				case Content.ONE:
-					$('#'+rh).html('1');
-					$('#'+rh).css('color', 'blue');
+					_cells[x][y].setText('1');
+					//$('#'+rh).css('color', 'blue');
 					break;
 				case Content.TWO:
-					$('#'+rh).html('2');
-					$('#'+rh).css('color', 'green');
+					_cells[x][y].setText('2');
+					//$('#'+rh).css('color', 'green');
 					break;
 				case Content.THREE:
-					$('#'+rh).html('3');
-					$('#'+rh).css('color', 'red');
+					_cells[x][y].setText('3');
+					//$('#'+rh).css('color', 'red');
 					break;
 				case Content.FOUR:
-					$('#'+rh).html('4');
-					$('#'+rh).css('color', 'blue');
+					_cells[x][y].setText('4');
+					//$('#'+rh).css('color', 'blue');
 				break;
 				case Content.FIVE:
-					$('#'+rh).html('5');
-					$('#'+rh).css('color', 'brown');
+					_cells[x][y].setText('5');
+					//$('#'+rh).css('color', 'brown');
 				break;
 				case Content.SIX:
-					$('#'+rh).html('6');
-					$('#'+rh).css('color', 'turquoise');
+					_cells[x][y].setTextl('6');
+					//$('#'+rh).css('color', 'turquoise');
 				break;
 				case Content.SEVEN:
-					$('#'+rh).html('7');
-					$('#'+rh).css('color', 'black');
+					_cells[x][y].setText('7');
+					//$('#'+rh).css('color', 'black');
 				break;
 				case Content.EIGHT:
-					$('#'+rh).html('8');
-					$('#'+rh).css('color', 'silver');
+					_cells[x][y].setText('8');
+					//$('#'+rh).css('color', 'silver');
 				break;
 				default:
-					$('#'+rh).html(cell.content);
+					_cells[x][y].setText(cell.content);
 			}
 			setClickedBackground();
 		}
 	};
 	
 	this.refreshMinesRemained = function(minesRemained) {
-		$('#mines').html(minesRemained);
+		//$('#mines').html(minesRemained);
 	};
 	
-	this.refreshSeconds = function(seconds) {
-		$('#seconds').html(seconds);
+	this.refreshSeconds = function(_seconds) {
+		//$('#seconds').html(seconds);
 	};
 	
 	this.clear = function() {
-		$('#field').html('');
-		$('#mines').html('');
-		$('#seconds').html('');
+		//$('#field').html('');
+		//$('#mines').html('');
+		//$('#seconds').html('');
 	};
 }
 
