@@ -21,7 +21,7 @@ var Mark = new Enum ([
 ]);
 
 //class Sweeper
-function Sweeper(_x, _y, _mines, _ui) {	
+function Sweeper(_x, _y, _mines) {	
 	var x = (_x > 5) ? (_x) : (5);
 	var y = (_y > 5) ? (_y) : (5);
 	var mines = (_mines > 1) ? ( (_mines < x * y) ? (_mines) : (x * y - 1) ) 
@@ -30,9 +30,6 @@ function Sweeper(_x, _y, _mines, _ui) {
 	this.getX = function() { return x; };
 	this.getY = function() { return y; };
 	this.getMines = function() { return mines; };
-	
-	var ui = _ui;
-	ui.setSweeper(this);
 	
 	var cells = new Array();
 	this.getCells = function() { return cells; }
@@ -95,6 +92,25 @@ function Sweeper(_x, _y, _mines, _ui) {
 	} 
 	//end generate cells
 	
+	//Events
+	var minesRemainedChangedEvent = new EventManager();
+	this.addMinesRemainedChangedEventListener = function(listener) {
+		minesRemainedChangedEvent.addListener(listener);
+	};
+	var secondsChangedEvent = new EventManager();
+	this.addSecondsChangedEventListener = function(listener) {
+		secondsChangedEvent.addListener(listener);
+	};
+	var	refreshCellEvent = new EventManager();
+	this.addRefreshCellEventListener = function(listener) {
+		refreshCellEvent.addListener(listener);
+	};
+	var gameFinishedEvent = new EventManager();
+	this.addGameFinishedEventListener = function(listener) {
+		gameFinishedEvent.addListener(listener);
+	};
+	//end events
+	
 	var stateManager = new FSM(State.BEGIN);
 	this.getStateManager = function() { return stateManager; }
 			
@@ -107,10 +123,11 @@ function Sweeper(_x, _y, _mines, _ui) {
 		var finishGame = function() { 
 			for (var i in cells) {
 				for (var j in cells[i]) {
-					ui.refreshCell(cells[i][j], i, j);		
+					refreshCellEvent.fire(cells[i][j], i, j);		
 				}
 			}
-			timer.cancel();		
+			timer.cancel();
+			gameFinishedEvent.fire();
 		};
 		stateManager.addTransition(State.RUNNING, State.GAME_OVER, finishGame);
 		stateManager.addTransition(State.BEGIN, State.GAME_OVER, finishGame);
@@ -120,14 +137,14 @@ function Sweeper(_x, _y, _mines, _ui) {
 				timer = java.util.Timer(true) //daemon
 				timer.schedule(new Packages.by.ales.minesweeper.scripting.RunnableTimerTask(
 					function() {
-						ui.refreshSeconds(++seconds); 
-					}), 0, 1000);
+						secondsChangedEvent.fire(++seconds); 
+					}), 1000, 1000);
 			});
 		stateManager.addTransition(State.RUNNING, State.FINISH, 
 			function() {
 				finishGame();
 				minesRemained = 0;
-				ui.refreshMinesRemained(minesRemained);
+				minesRemainedChangedEvent.fire(minesRemained);
 		});
 	}
 	//end initialize state manager
@@ -136,7 +153,7 @@ function Sweeper(_x, _y, _mines, _ui) {
 	
 	var doClickCell = function(x, y) {
 		cells[x][y].clicked = true;
-		ui.refreshCell(cells[x][y], x, y);
+		refreshCellEvent.fire(cells[x][y], x, y);
 		--notClickedCells;
 	};
 	
@@ -196,12 +213,12 @@ function Sweeper(_x, _y, _mines, _ui) {
 			case Mark.NONE:
 				cell.mark = Mark.FLAG;
 				--minesRemained;
-				ui.refreshMinesRemained(minesRemained);
+				minesRemainedChangedEvent.fire(minesRemained);
 				break;
 			case Mark.FLAG:
 				cell.mark = Mark.QUESTION;
 				++minesRemained;
-				ui.refreshMinesRemained(minesRemained);
+				minesRemainedChangedEvent.fire(minesRemained);
 				break;
 			case Mark.QUESTION:
 				cell.mark = Mark.NONE;
@@ -210,11 +227,9 @@ function Sweeper(_x, _y, _mines, _ui) {
 				throw "unknown mark " + cell.mark;
 		}
 		
-		ui.refreshCell(cell, x, y);
+		refreshCellEvent.fire(cell, x, y);
 	};
 
-	ui.show(cells, minesRemained, seconds);
-	
 	this.dispose = function(x, y, mines) {
 		if (timer) {
 			timer.cancel();

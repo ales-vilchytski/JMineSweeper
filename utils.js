@@ -55,3 +55,20 @@ function visitNeighbourCells(cellsArray, xx, yy, callback) {
 		}
 	}
 }
+
+//class EventManager
+function EventManager() {
+
+	var _listeners = [];
+	
+	this.addListener = function(listener) {
+		_listeners.push(listener);
+	}
+	
+	this.fire = function(_this) {
+		for (var i in _listeners) {
+			_listeners[i].apply(_this, arguments);
+		}
+	}
+	
+}

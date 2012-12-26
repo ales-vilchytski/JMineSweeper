@@ -47,4 +47,8 @@ public class ScriptExecutor {
 		}
 	}
 	
+	public void debug(Object info) {
+		System.out.printf("[DEBUG] %s\n", info);
+	}
+	
 }

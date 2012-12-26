@@ -1,50 +1,59 @@
-$.include('sweeper.js')
+$.include('utils.js');
 
 var SwingGui = new JavaImporter(
 	java.awt.FlowLayout,
 	javax.swing,
     javax.swing.event,
     javax.swing.border,
-    java.awt.event);
+    java.awt.event,
+    java.awt.Color);
 
-//class UI
-function UI() {
-	
-	var sweeper;
-	this.setSweeper = function(_sweeper) { sweeper = _sweeper; };
-	this.getSweeper = function() { return sweeper; };
+//class Field
+function Field(cells) {
 	
 	var panel;
-	this.getPanel = function() { return panel; };	
-	var _cells = [];
-	this.show = function(cells, minesRemained, seconds) {
-		with (SwingGui) {
-			panel = new JPanel(new GridLayout(cells.length, cells[cells.length - 1].length));
-			for (var i in cells) {
-				_cells.push([]);
-				for (var j in cells[i]) {
-					var button = new JButton();
-					panel.add(button);
-					_cells[i].push(button);
-					
-					var listener = function(_i, _j) {
-						return function(mouseEvent) {
-							if (SwingUtilities.isRightMouseButton(mouseEvent)) {
-								sweeper.markCell(_i, _j);
-							} else if (SwingUtilities.isLeftMouseButton(mouseEvent)) {
-								sweeper.clickCell(_i, _j);
-							}
-						};
-					}
-					button.addMouseListener(listener(i, j));
-				}
-			}
-		}
-		this.refreshMinesRemained(minesRemained);
-		this.refreshSeconds(seconds);
+	this.getPanel = function() { return panel; };
+	
+	var clickCellEvent = new EventManager();
+	this.addClickCellListener = function(listener) {
+		clickCellEvent.addListener(listener);
+	};
+	var markCellEvent = new EventManager();
+	this.addMarkCellEvent = function(listener) {
+		markCellEvent.addListener(listener);
 	};
 	
-	this.refreshCell = function(cell, x, y) {
+	var _cells = [];
+	var createMouseClickListener = function(x, y) {
+		with (SwingGui) {
+			return function(mouseEvent) {
+				if (mouseEvent.getID() === mouseEvent.MOUSE_PRESSED) {
+					if (SwingUtilities.isLeftMouseButton(mouseEvent)) {
+						clickCellEvent.fire(x, y);
+					} else if (SwingUtilities.isRightMouseButton(mouseEvent)) {
+						markCellEvent.fire(x, y);
+					};
+				}
+			};
+		}
+	};
+	with (SwingGui) {
+		var grid = new GridLayout(cells.length, cells[cells.length - 1].length, 4, 4);
+		panel = new JPanel(grid);
+		for (var i in cells) {
+			_cells.push([]);
+			for (var j in cells[i]) {
+				var button = new JButton();
+				button.setBackground(java.awt.Color.GRAY);
+				button.setBorder
+				panel.add(button);
+				_cells[i].push(button);
+				button.addMouseListener(createMouseClickListener(i, j));
+			}
+		}
+	}
+	
+	this.refreshCell = function(cell, x, y, state) {
 		//reusable local functions
 		{
 			var markFlag = function() {
@@ -54,12 +63,11 @@ function UI() {
 				_cells[x][y].setText('mine');
 			};
 			var setClickedBackground = function() {
-				//_cells[x][y].setText('_');
+				_cells[x][y].setBackground(java.awt.Color.WHITE);
 			};
 		}
 		//end reusable local functions
 		
-		var state = this.getSweeper().getStateManager().getCurrentState();
 		if (!cell.clicked) {
 			switch (cell.mark) {
 				case Mark.FLAG: 
@@ -145,34 +153,9 @@ function UI() {
 		}
 	};
 	
-	this.refreshMinesRemained = function(minesRemained) {
-		//$('#mines').html(minesRemained);
-	};
-	
-	this.refreshSeconds = function(_seconds) {
-		//$('#seconds').html(seconds);
-	};
-	
 	this.clear = function() {
 		//$('#field').html('');
 		//$('#mines').html('');
 		//$('#seconds').html('');
 	};
-}
-
-UI.XYToCellId = function(x, y) {
-	return 'r' + x + 'h' + y;
-}
-	
-UI.cellIdToXY = function(rh) {
-	return { 
-		x : Number(rh.match(/^r(\d+)/)[1]), 
-		y : Number(rh.match(/h(\d+)$/)[1])
-	};			
-}
-
-//class Score
-function Score(name, score) {
-	this.name = name;
-	this.score = score;
 }
