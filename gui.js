@@ -1,5 +1,7 @@
 $.include('sweeper.js')
 $.include('field.js')
+$.include('settings.js')
+$.include('settings_window.js')
 
 var SwingGui = new JavaImporter(
 	java.awt.FlowLayout,
@@ -10,61 +12,15 @@ var SwingGui = new JavaImporter(
     java.awt.event);
 
 var settingsWindow;
-
-//class Settings
-function Settings(x, y, mines) {
-	this.x = x;
-	this.y = y;
-	this.mines = mines;
-	
-	this.equals = function(other) {
-		return  typeof(this) === typeof(other) &&
-				this.x === other.x && 
-				this.y === other.y &&
-				this.mines === other.mines
-	}
-}
 var settings = new Settings(5, 5, 5); //defaults
 
 function showSettingsWindow() {
-	if (!settingsWindow) {
-		with (SwingGui) {
-			settingsWindow = new JDialog(currentFrame, 'Settings', true);
-			settingsWindow.setSize(200, 300);
-			settingsWindow.setLayout(new GridLayout(4, 2));
-			
-			settingsWindow.add(new JLabel('x'));
-			var xField = new JTextField(String(5));
-			settingsWindow.add(xField);
-
-			settingsWindow.add(new JLabel('y'));
-			var yField = new JTextField(String(5));
-			settingsWindow.add(yField);
-			
-			settingsWindow.add(new JLabel('Mines'));
-			var minesField = new JTextField(String(5));
-			settingsWindow.add(minesField);
-			
-			var okButton = new JButton('Ok');
-			var cancelButton = new JButton('Cancel');
-			
-			okButton.addActionListener(function(event) {
-				settingsWindow.setVisible(false);
-				var s = new Settings(
-						Number(xField.getText()),
-						Number(yField.getText()),
-						Number(minesField.getText()));
-				if (!s.equals(settings)) {
-					settings = s;
-					newGame();
-				}
-			});
-			cancelButton.addActionListener(function(event) {
-				settingsWindow.setVisible(false);
-			});
-			settingsWindow.add(okButton);
-			settingsWindow.add(cancelButton);
-		}
+	if (!settingsWindow) { //lazy init
+		settingsWindow = new SettingsWindow(currentFrame, settings);
+		settingsWindow.addSettingsChangedEventListener(function(newSettings) {
+			settings = newSettings;
+			newGame();
+		});
 	}
 	settingsWindow.show();
 }
