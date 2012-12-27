@@ -1,4 +1,5 @@
 $.include('utils.js');
+$.include('event_manager.js');
 
 var SwingGui = new JavaImporter(
 	java.awt.FlowLayout,
@@ -14,24 +15,22 @@ function Field(cells) {
 	var panel;
 	this.getPanel = function() { return panel; };
 	
-	var clickCellEvent = new EventManager();
-	this.addClickCellListener = function(listener) {
-		clickCellEvent.addListener(listener);
-	};
-	var markCellEvent = new EventManager();
-	this.addMarkCellEvent = function(listener) {
-		markCellEvent.addListener(listener);
-	};
+	var eventKey = new Object();
+	var clickCellEvent = new EventManager(eventKey);
+	this.getClickCellEvent = function() { return clickCellEvent; }
 	
+	var markCellEvent = new EventManager(eventKey);
+	this.getMarkCellEvent = function() { return markCellEvent; }
+		
 	var _cells = [];
 	var createMouseClickListener = function(x, y) {
 		with (SwingGui) {
 			return function(mouseEvent) {
 				if (mouseEvent.getID() === mouseEvent.MOUSE_PRESSED) {
 					if (SwingUtilities.isLeftMouseButton(mouseEvent)) {
-						clickCellEvent.fire(x, y);
+						clickCellEvent.fire(eventKey, x, y);
 					} else if (SwingUtilities.isRightMouseButton(mouseEvent)) {
-						markCellEvent.fire(x, y);
+						markCellEvent.fire(eventKey, x, y);
 					};
 				}
 			};

@@ -17,10 +17,11 @@ var settings = new Settings(5, 5, 5); //defaults
 function showSettingsWindow() {
 	if (!settingsWindow) { //lazy init
 		settingsWindow = new SettingsWindow(currentFrame, settings);
-		settingsWindow.addSettingsChangedEventListener(function(newSettings) {
-			settings = newSettings;
-			newGame();
-		});
+		settingsWindow.getSettingsChangedEvent().addListener(
+			function(newSettings) {
+				settings = newSettings;
+				newGame();
+			});
 	}
 	settingsWindow.show();
 }
@@ -29,15 +30,16 @@ function setMainWindow(frame, sweeper, cellSize) {
 	with(SwingGui) {
 		var field = new Field(sweeper.getCells());
 
-		sweeper.addRefreshCellEventListener(function(cell, x, y) {
-			field.refreshCell(cell, x, y, sweeper.getStateManager().getCurrentState());
+		sweeper.getRefreshCellEvent().addListener(function(cell, x, y) {
+			field.refreshCell(cell, x, y, 
+					sweeper.getStateManager().getCurrentState());
 		});
 		
-		field.addClickCellListener(function(x, y) {
+		field.getClickCellEvent().addListener(function(x, y) {
 			sweeper.clickCell(x, y);
 		});
 		
-		field.addMarkCellEvent(function(x, y) {
+		field.getMarkCellEvent().addListener(function(x, y) {
 			sweeper.markCell(x, y);
 		});
 		
@@ -65,19 +67,20 @@ function setMainWindow(frame, sweeper, cellSize) {
 			
 			var secMenu = new JLabel('Seconds: ' + 0);
 			menuBar.add(secMenu);
-			sweeper.addSecondsChangedEventListener(function(seconds) {
+			sweeper.getSecondsChangedEvent().addListener(function(seconds) {
 				secMenu.setText('Seconds: ' + seconds);
 			});
 			
 			var minesMenu = new JLabel('Mines: ' + sweeper.getMines());
 			menuBar.add(minesMenu);
-			sweeper.addMinesRemainedChangedEventListener(function(minesRemained) {
-				minesMenu.setText('Mines: ' + minesRemained);
-			});
+			sweeper.getMinesRemainedChangedEvent().addListener(
+				function(minesRemained) {
+					minesMenu.setText('Mines: ' + minesRemained);
+				});
 		}
 		//end set menu
 		
-		sweeper.addGameFinishedEventListener(function() {
+		sweeper.getGameFinishedEvent().addListener(function() {
 			new JDialog(currentFrame, 'Score', false).show();
 		});
 		

@@ -1,5 +1,6 @@
 $.include('settings.js')
 $.include('utils.js')
+$.include('event_manager.js')
 
 //class SettingsWindow
 function SettingsWindow(parent, _settings /** initial settings */) {
@@ -8,10 +9,9 @@ function SettingsWindow(parent, _settings /** initial settings */) {
 	this.getSettings = function() { return settings; }
 	this.setSettings = function(_settings) { settings = _settings; }
 	
-	var settingsChangedEvent = new EventManager();
-	this.addSettingsChangedEventListener = function(listener) {
-		settingsChangedEvent.addListener(listener);
-	}
+	var eventKey = new Object();
+	var settingsChangedEvent = new EventManager(eventKey);
+	this.getSettingsChangedEvent = function() { return settingsChangedEvent; }
 	
 	var settingsWindow; //Swing implementation of window
 	
@@ -45,7 +45,7 @@ function SettingsWindow(parent, _settings /** initial settings */) {
 									Number(minesField.getText()));
 					if (!s.equals(settings)) {
 						settings = s;
-						settingsChangedEvent.fire(settings);
+						settingsChangedEvent.fire(eventKey, settings);
 					}
 				});
 				cancelButton.addActionListener(function(event) {
