@@ -14,6 +14,7 @@ function SettingsWindow(parent, _settings /** initial settings */) {
 	this.getSettingsChangedEvent = function() { return settingsChangedEvent; }
 	
 	var settingsWindow; //Swing implementation of window
+	this.getWindow = function() { return settingsWindow; }
 	
 	this.show = function() {
 		if (!settingsWindow) { //lazy init
@@ -39,14 +40,11 @@ function SettingsWindow(parent, _settings /** initial settings */) {
 				
 				okButton.addActionListener(function(event) {
 					settingsWindow.setVisible(false);
-					var s = new Settings(
-									Number(xField.getText()),
-									Number(yField.getText()),
-									Number(minesField.getText()));
-					if (!s.equals(settings)) {
-						settings = s;
-						settingsChangedEvent.fire(eventKey, settings);
-					}
+					settings.x = Number(xField.getText());
+					settings.y = Number(yField.getText());
+					settings.mines = Number(minesField.getText());
+					
+					settingsChangedEvent.fire(eventKey, settings);
 				});
 				cancelButton.addActionListener(function(event) {
 					settingsWindow.setVisible(false);

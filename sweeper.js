@@ -1,5 +1,7 @@
 $.include('utils.js')
 $.include('event_manager.js')
+$.include('fsm.js')
+$.include('enum.js')
 
 //class Cell
 function Cell(clicked, content, mark) {
@@ -94,19 +96,20 @@ function Sweeper(_x, _y, _mines) {
 	//end generate cells
 	
 	//Events
-	var eventKey = new Object();
-	var minesRemainedChangedEvent = new EventManager(eventKey);
-	this.getMinesRemainedChangedEvent = function() { return minesRemainedChangedEvent; }
-	
-	var secondsChangedEvent = new EventManager(eventKey);
-	this.getSecondsChangedEvent = function() { return secondsChangedEvent; }
-	
-	var refreshCellEvent = new EventManager(eventKey);
-	this.getRefreshCellEvent = function() { return refreshCellEvent; }
-	
-	var gameFinishedEvent = new EventManager(eventKey);
-	this.getGameFinishedEvent = function() { return gameFinishedEvent; }
-	//end events
+	{
+		var eventKey = new Object();
+		var minesRemainedChangedEvent = new EventManager(eventKey);
+		this.getMinesRemainedChangedEvent = function() { return minesRemainedChangedEvent; }
+		
+		var secondsChangedEvent = new EventManager(eventKey);
+		this.getSecondsChangedEvent = function() { return secondsChangedEvent; }
+		
+		var refreshCellEvent = new EventManager(eventKey);
+		this.getRefreshCellEvent = function() { return refreshCellEvent; }
+		
+		var gameFinishedEvent = new EventManager(eventKey);
+		this.getGameFinishedEvent = function() { return gameFinishedEvent; }
+	}//end events
 	
 	var stateManager = new FSM(State.BEGIN);
 	this.getStateManager = function() { return stateManager; }

@@ -37,8 +37,8 @@ function EventManager(_activatorKey) {
 			if (activatorKey === _activatorKey) {
 				args = copyArgsToArray.apply(null, arguments).slice(1);
 			} else {
-				throw 'Wrong event activation key';
-			}	
+				throw 'Wrong event activation key'; // "debug"-exception
+			}
 		}
 		for (var i in listeners) {
 			var listener = listeners[i];
