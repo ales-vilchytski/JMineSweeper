@@ -151,10 +151,5 @@ function Field(cells) {
 			setClickedBackground();
 		}
 	};
-	
-	this.clear = function() {
-		//$('#field').html('');
-		//$('#mines').html('');
-		//$('#seconds').html('');
-	};
+
 }

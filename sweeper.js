@@ -107,6 +107,9 @@ function Sweeper(_x, _y, _mines) {
 		var refreshCellEvent = new EventManager(eventKey);
 		this.getRefreshCellEvent = function() { return refreshCellEvent; }
 		
+		var gameOverEvent = new EventManager(eventKey);
+		this.getGameOverEvent = function() { return gameOverEvent; }
+		
 		var gameFinishedEvent = new EventManager(eventKey);
 		this.getGameFinishedEvent = function() { return gameFinishedEvent; }
 	}//end events
@@ -127,10 +130,15 @@ function Sweeper(_x, _y, _mines) {
 				}
 			}
 			timer.cancel();
-			gameFinishedEvent.fire(eventKey);
 		};
-		stateManager.addTransition(State.RUNNING, State.GAME_OVER, finishGame);
-		stateManager.addTransition(State.BEGIN, State.GAME_OVER, finishGame);
+		stateManager.addTransition(State.RUNNING, State.GAME_OVER, function() {
+			finishGame();
+			gameOverEvent.fire(eventKey);
+		});
+		stateManager.addTransition(State.BEGIN, State.GAME_OVER, function() {
+			finishGame();
+			gameOverEvent.fire(eventKey);
+		});
 		
 		stateManager.addTransition(State.BEGIN, State.RUNNING, 
 			function() {
@@ -145,6 +153,7 @@ function Sweeper(_x, _y, _mines) {
 				finishGame();
 				minesRemained = 0;
 				minesRemainedChangedEvent.fire(eventKey, minesRemained);
+				gameFinishedEvent.fire(eventKey);
 		});
 	}
 	//end initialize state manager

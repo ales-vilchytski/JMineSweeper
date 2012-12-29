@@ -16,6 +16,6 @@ public class Main {
 		ScriptEngine engine = engineFactory.getEngineByName("JavaScript");
 	
 		ScriptExecutor executor = new ScriptExecutor(engine);
-		executor.execute("gui.js");
+		executor.execute("main.js");
 	}
 }
