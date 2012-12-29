@@ -45,4 +45,12 @@ function EventManager(_activatorKey) {
 			listener.apply(null, args);
 		}
 	}	
+	
+	this.toString = function() {
+		var strs = [];
+		for (var i in listeners) {
+			strs.push(listeners[i]);
+		}
+		return strs.join('\n');
+	}
 }

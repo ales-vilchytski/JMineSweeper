@@ -18,22 +18,30 @@ function FSM(initialState) {
 	}
 	
 	var eventKey = new Object();
-	var changeStateEvent = new EventManager(eventKey);
-	this.getChangeStateEvent = function() { return changeStateEvent; }
+	var stateChangedEvent = new EventManager(eventKey);
+	this.getStateChangedEvent = function() { return stateChangedEvent; }
 	
 	this.changeState = function(newState) {
 		var state = currentState;
-		currentState = newState;
-		transitions[state][newState].fire();
-		
+		if (transitions[state] && transitions[state][newState]) {
+			currentState = newState;
+			transitions[state][newState].fire();
+			stateChangedEvent.fire(eventKey, state, newState);
+		} else {
+			throw 'Transition from state ' + state + ' to state ' + newState + ' is undefined'
+		}
 	}
-	
+		
 	this.toString = function() {
 		var strs = []
 		for (var i in transitions) {
 			for (var j in transitions[i]) {
-				alert(transitions[i][j]);
+				if (transitions[i][j] instanceof EventManager) {
+					strs.push(String(i) + ' => ' + String(j) + ':\n' 
+						+ transitions[i][j].toString());
+				}
 			}
 		}
+		return strs.join('\n');
 	}
 }
