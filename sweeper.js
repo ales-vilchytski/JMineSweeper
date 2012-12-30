@@ -4,19 +4,6 @@ $.include('state_manager.js');
 $.include('enum.js');
 $.include('cell.js');
 
-var Content = new Enum ([
-	'NONE', 'MINE', 'ONE', 'TWO', 'THREE', 'FOUR', 
-	'FIVE', 'SIX', 'SEVEN', 'EIGHT'
-]);
-
-var State = new Enum([
-	'BEGIN', 'RUNNING', 'GAME_OVER', 'FINISH'
-]); 
-
-var Mark = new Enum ([
-	'NONE', 'FLAG', 'QUESTION'
-]);
-
 //class Sweeper
 function Sweeper(_x, _y, _mines) {	
 	var x = (_x > 5) ? (_x) : (5);
@@ -53,32 +40,32 @@ function Sweeper(_x, _y, _mines) {
 			for (var j = 0; j < y; ++j) {
 				var content;
 				if (minesMap[i][j] === true) {
-					content = Content.MINE;
+					content = Cell.Content.MINE;
 				} else {
-					content = Content.NONE;
+					content = Cell.Content.NONE;
 				}
-				cells[i].push(new Cell(false, content, Mark.NONE));
+				cells[i].push(new Cell(false, content, Cell.Mark.NONE));
 			}
 		}
 		//calculate mines around each cell
 		var contentMap = new Array();
-		contentMap[0] = Content.NONE;
-		contentMap[1] = Content.ONE;
-		contentMap[2] = Content.TWO;
-		contentMap[3] = Content.THREE;
-		contentMap[4] = Content.FOUR;
-		contentMap[5] = Content.FIVE;
-		contentMap[6] = Content.SIX;
-		contentMap[7] = Content.SEVEN;
-		contentMap[8] = Content.EIGHT;
+		contentMap[0] = Cell.Content.NONE;
+		contentMap[1] = Cell.Content.ONE;
+		contentMap[2] = Cell.Content.TWO;
+		contentMap[3] = Cell.Content.THREE;
+		contentMap[4] = Cell.Content.FOUR;
+		contentMap[5] = Cell.Content.FIVE;
+		contentMap[6] = Cell.Content.SIX;
+		contentMap[7] = Cell.Content.SEVEN;
+		contentMap[8] = Cell.Content.EIGHT;
 			
 		for (var i = 0; i < x; ++i) {
 			for (var j = 0; j < y; ++j) {
-				if (cells[i][j].content != Content.MINE) {
+				if (cells[i][j].content != Cell.Content.MINE) {
 					var count = 0;
 					visitNeighbourCells(cells, i, j, 
 						function(cell, x, y) {
-							if (cell.content === Content.MINE) { 
+							if (cell.content === Cell.Content.MINE) { 
 								++count;
 							}
 						});
@@ -108,13 +95,13 @@ function Sweeper(_x, _y, _mines) {
 		this.getGameFinishedEvent = function() { return gameFinishedEvent; };
 	}//end events
 	
-	var stateManager = new StateManager(State.BEGIN);
+	var stateManager = new StateManager(Sweeper.State.BEGIN); //states see after class def
 	this.getStateManager = function() { return stateManager; };
 			
 	var timer = null;
 	var seconds = 0;
 	this.getSeconds = function() { return seconds; };
-		
+
 	//initialize state manager with transitions
 	{
 		var finishGame = function() { 
@@ -125,24 +112,27 @@ function Sweeper(_x, _y, _mines) {
 			}
 			timer.cancel();
 		};
-		stateManager.addTransition(State.RUNNING, State.GAME_OVER, function() {
-			finishGame();
-			gameOverEvent.fire(eventKey);
-		});
-		stateManager.addTransition(State.BEGIN, State.GAME_OVER, function() {
-			finishGame();
-			gameOverEvent.fire(eventKey);
-		});
+		stateManager.addTransition(Sweeper.State.RUNNING, Sweeper.State.GAME_OVER, 
+			function() {
+				finishGame();
+				gameOverEvent.fire(eventKey);
+			});
+		stateManager.addTransition(Sweeper.State.BEGIN, Sweeper.State.GAME_OVER, 
+			function() {
+				finishGame();
+				gameOverEvent.fire(eventKey);
+			});
 		
-		stateManager.addTransition(State.BEGIN, State.RUNNING, 
+		stateManager.addTransition(Sweeper.State.BEGIN, Sweeper.State.RUNNING, 
 			function() {
 				timer = java.util.Timer(true); //daemon
-				timer.schedule(new Packages.by.ales.minesweeper.scripting.RunnableTimerTask(
-					function() {
-						secondsChangedEvent.fire(eventKey, ++seconds); 
-					}), 1000, 1000);
+				timer.schedule(
+					new Packages.by.ales.minesweeper.scripting.RunnableTimerTask(
+						function() {
+							secondsChangedEvent.fire(eventKey, ++seconds); 
+						}), 1000, 1000);
 			});
-		stateManager.addTransition(State.RUNNING, State.FINISH, 
+		stateManager.addTransition(Sweeper.State.RUNNING, Sweeper.State.FINISH, 
 			function() {
 				finishGame();
 				minesRemained = 0;
@@ -162,8 +152,8 @@ function Sweeper(_x, _y, _mines) {
 	
 	//click and mark cell actions	
 	var checkClickPreconditions = function(x, y) {
-		if (stateManager.getCurrentState() === State.GAME_OVER ||
-			stateManager.getCurrentState() === State.FINISH ||
+		if (stateManager.getCurrentState() === Sweeper.State.GAME_OVER ||
+			stateManager.getCurrentState() === Sweeper.State.FINISH ||
 			cells[x][y].clicked) {
 			return false;
 		} else {
@@ -176,25 +166,25 @@ function Sweeper(_x, _y, _mines) {
 		if (!checkClickPreconditions(x, y)) {
 			return;
 		}
-		if (stateManager.getCurrentState() === State.BEGIN) {
-			stateManager.changeState(State.RUNNING);
+		if (stateManager.getCurrentState() === Sweeper.State.BEGIN) {
+			stateManager.changeState(Sweeper.State.RUNNING);
 		}
 		
 		var mark = cells[x][y].mark;
-		if (mark == Mark.FLAG) { 
+		if (mark == Cell.Mark.FLAG) { 
 			return; 
 		}
 	
 		doClickCell(x, y);
 			
 		var content = cells[x][y].content;
-		if (content === Content.MINE) {
-			stateManager.changeState(State.GAME_OVER);
-		} else if ((stateManager.getCurrentState() === State.RUNNING ||
-				    stateManager.getCurrentState() === State.BEGIN) &&
+		if (content === Cell.Content.MINE) {
+			stateManager.changeState(Sweeper.State.GAME_OVER);
+		} else if ((stateManager.getCurrentState() === Sweeper.State.RUNNING ||
+				    stateManager.getCurrentState() === Sweeper.State.BEGIN) &&
 				   notClickedCells == mines) {
-			stateManager.changeState(State.FINISH);
-		} else if (content === Content.NONE) {
+			stateManager.changeState(Sweeper.State.FINISH);
+		} else if (content === Cell.Content.NONE) {
 			visitNeighbourCells(cells, x, y, 
 				function(cell, m, n) {
 					_clickCell(m, n);
@@ -213,18 +203,18 @@ function Sweeper(_x, _y, _mines) {
 		
 		var cell = cells[x][y];
 		switch (cell.mark) {
-			case Mark.NONE:
-				cell.mark = Mark.FLAG;
+			case Cell.Mark.NONE:
+				cell.mark = Cell.Mark.FLAG;
 				--minesRemained;
 				minesRemainedChangedEvent.fire(eventKey, minesRemained);
 				break;
-			case Mark.FLAG:
-				cell.mark = Mark.QUESTION;
+			case Cell.Mark.FLAG:
+				cell.mark = Cell.Mark.QUESTION;
 				++minesRemained;
 				minesRemainedChangedEvent.fire(eventKey, minesRemained);
 				break;
-			case Mark.QUESTION:
-				cell.mark = Mark.NONE;
+			case Cell.Mark.QUESTION:
+				cell.mark = Cell.Mark.NONE;
 				break;
 			default:
 				throw "unknown mark " + cell.mark;
@@ -248,4 +238,12 @@ function Sweeper(_x, _y, _mines) {
 			}
 		}
 	};
-}
+};
+
+Sweeper.State = {
+	BEGIN: '',
+	RUNNING: '',
+	GAME_OVER: '',
+	FINISH: ''
+}; 
+Enum.apply(Sweeper.State);

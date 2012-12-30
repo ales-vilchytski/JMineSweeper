@@ -1,3 +1,5 @@
+$.include('enum.js');
+
 //class Cell
 function Cell(clicked, content, mark) {
 	this.clicked = clicked;
@@ -10,3 +12,24 @@ function Cell(clicked, content, mark) {
 				'; mark: ' + this.mark + ' }';
 	};
 }
+
+Cell.Content = {
+	NONE: '', 
+	MINE: '',
+	ONE: '',
+	TWO: '', 
+	THREE: '',
+	FOUR: '', 
+	FIVE: '', 
+	SIX: '',
+	SEVEN: '',
+	EIGHT: ''
+};
+Enum.apply(Cell.Content);
+
+Cell.Mark = {
+	NONE: '', 
+	FLAG: '', 
+	QUESTION: ''
+};
+Enum.apply(Cell.Mark);

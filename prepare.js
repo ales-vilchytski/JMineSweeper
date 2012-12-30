@@ -11,5 +11,7 @@ this.namespace = function(name, creator) {
 		}
 	}
 	
-	creator.apply(ns, null);
+	if (creator) {
+		creator.apply(ns, null);
+	}
 };

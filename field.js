@@ -1,5 +1,6 @@
 $.include('utils.js');
 $.include('event.js');
+$.include('cell.js');
 
 //class Field
 function Field(cells) {
@@ -66,33 +67,33 @@ function Field(cells) {
 		
 		if (!cell.clicked) {
 			switch (cell.mark) {
-				case Mark.FLAG: 
-					if (state === State.GAME_OVER && 
-						cell.content !== Content.MINE) {	//draw cross
+				case Cell.Mark.FLAG: 
+					if (state === Sweeper.State.GAME_OVER && 
+						cell.content !== Cell.Content.MINE) {	//draw cross
 						_cells[x][y].setText('X');
 					} else {
 						markFlag();
 					}
 					break;
-				case Mark.QUESTION:
-					if (state === State.GAME_OVER &&
-						cell.content === Content.MINE){
+				case Cell.Mark.QUESTION:
+					if (state === Sweeper.State.GAME_OVER &&
+						cell.content === Cell.Content.MINE){
 						showMine();
 						setClickedBackground();
-					} else if (state === State.FINISH &&
-							   cell.content === Content.MINE) {
+					} else if (state === Sweeper.State.FINISH &&
+							   cell.content === Cell.Content.MINE) {
 						markFlag();
 					} else {
 						_cells[x][y].setText('?');
 					}
 					break;
-				case Mark.NONE:
-					if (state === State.GAME_OVER &&
-							   cell.content === Content.MINE){
+				case Cell.Mark.NONE:
+					if (state === Sweeper.State.GAME_OVER &&
+							   cell.content === Cell.Content.MINE){
 						showMine();
 						setClickedBackground();
-					} else if (state === State.FINISH &&
-						cell.content === Content.MINE) {
+					} else if (state === Sweeper.State.FINISH &&
+						cell.content === Cell.Content.MINE) {
 						markFlag();
 					} else {
 						_cells[x][y].setText('');
@@ -103,42 +104,42 @@ function Field(cells) {
 			}
 		} else {
 			switch (cell.content) {
-				case Content.MINE:
+				case Cell.Content.MINE:
 					showMine();
 					//$('#'+rh).css('background-color', 'red');
 					return;
-				case Content.NONE:
+				case Cell.Content.NONE:
 					_cells[x][y].setText('');
 					break;
-				case Content.ONE:
+				case Cell.Content.ONE:
 					_cells[x][y].setText('1');
 					//$('#'+rh).css('color', 'blue');
 					break;
-				case Content.TWO:
+				case Cell.Content.TWO:
 					_cells[x][y].setText('2');
 					//$('#'+rh).css('color', 'green');
 					break;
-				case Content.THREE:
+				case Cell.Content.THREE:
 					_cells[x][y].setText('3');
 					//$('#'+rh).css('color', 'red');
 					break;
-				case Content.FOUR:
+				case Cell.Content.FOUR:
 					_cells[x][y].setText('4');
 					//$('#'+rh).css('color', 'blue');
 				break;
-				case Content.FIVE:
+				case Cell.Content.FIVE:
 					_cells[x][y].setText('5');
 					//$('#'+rh).css('color', 'brown');
 				break;
-				case Content.SIX:
+				case Cell.Content.SIX:
 					_cells[x][y].setTextl('6');
 					//$('#'+rh).css('color', 'turquoise');
 				break;
-				case Content.SEVEN:
+				case Cell.Content.SEVEN:
 					_cells[x][y].setText('7');
 					//$('#'+rh).css('color', 'black');
 				break;
-				case Content.EIGHT:
+				case Cell.Content.EIGHT:
 					_cells[x][y].setText('8');
 					//$('#'+rh).css('color', 'silver');
 				break;

@@ -1,5 +1,14 @@
-$.include('cell.js');
-$.include('sweeper.js');
+$.include('cell.js'); 
 
-var c = new Cell(false, Content.MINE, Mark.FLAG );
-$.debug(c);
+function fun() {
+	this.qwe = 'qwe';
+};
+
+fun.En = {
+		FIRST: {},
+		SECOND: {}
+	};
+Enum.apply(fun.En);
+
+
+$.debug();

@@ -16,6 +16,12 @@ public class Main {
 		ScriptEngine engine = engineFactory.getEngineByName("JavaScript");
 	
 		ScriptExecutor executor = new ScriptExecutor(engine);
-		executor.execute("main.js");
+		String filename = null;
+		if (args.length == 1) {
+			filename = args[0];
+		} else {
+			filename = "main.js";
+		}
+		executor.execute(filename);
 	}
 }
