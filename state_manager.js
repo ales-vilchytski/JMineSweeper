@@ -1,9 +1,9 @@
-$.include('event_manager.js')
+$.include('event.js');
 
-//class FSM - finite state machine
-function FSM(initialState) {
+//class StateManager - essential part of finite state machine
+function StateManager(initialState) {
 	var currentState = initialState;
-	this.getCurrentState = function() { return currentState; }
+	this.getCurrentState = function() { return currentState; };
 	
 	var transitions = new Object(); //hash-like storage
 	
@@ -12,14 +12,14 @@ function FSM(initialState) {
 			transitions[fromState] = new Object(); 
 		}
 		if (!transitions[fromState][toState]) {
-			transitions[fromState][toState] = new EventManager();
+			transitions[fromState][toState] = new Event();
 		}		
 		transitions[fromState][toState].addListener(func);
-	}
+	};
 	
 	var eventKey = new Object();
-	var stateChangedEvent = new EventManager(eventKey);
-	this.getStateChangedEvent = function() { return stateChangedEvent; }
+	var stateChangedEvent = new Event(eventKey);
+	this.getStateChangedEvent = function() { return stateChangedEvent; };
 	
 	this.changeState = function(newState) {
 		var state = currentState;
@@ -28,20 +28,20 @@ function FSM(initialState) {
 			transitions[state][newState].fire();
 			stateChangedEvent.fire(eventKey, state, newState);
 		} else {
-			throw 'Transition from state ' + state + ' to state ' + newState + ' is undefined'
+			throw 'Transition from state ' + state + ' to state ' + newState + ' is undefined';
 		}
-	}
+	};
 		
 	this.toString = function() {
-		var strs = []
+		var strs = [];
 		for (var i in transitions) {
 			for (var j in transitions[i]) {
-				if (transitions[i][j] instanceof EventManager) {
+				if (transitions[i][j] instanceof Event) {
 					strs.push(String(i) + ' => ' + String(j) + ':\n' 
 						+ transitions[i][j].toString());
 				}
 			}
 		}
 		return strs.join('\n');
-	}
+	};
 }

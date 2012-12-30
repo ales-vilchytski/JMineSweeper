@@ -1,54 +1,51 @@
 $.include('utils.js');
-$.include('event_manager.js');
-
-var SwingGui = new JavaImporter(
-	java.awt.FlowLayout,
-	javax.swing,
-    javax.swing.event,
-    javax.swing.border,
-    java.awt.event,
-    java.awt.Color);
+$.include('event.js');
 
 //class Field
 function Field(cells) {
 	
-	var panel;
+	var swing = new JavaImporter(
+			java.awt.FlowLayout,
+			java.awt.GridLayout,
+			javax.swing,
+		    javax.swing.event,
+		    javax.swing.border,
+		    java.awt.Color);
+	
+	var panel = null;
 	this.getPanel = function() { return panel; };
 	
 	var eventKey = new Object();
-	var clickCellEvent = new EventManager(eventKey);
-	this.getClickCellEvent = function() { return clickCellEvent; }
+	var clickCellEvent = new Event(eventKey);
+	this.getClickCellEvent = function() { return clickCellEvent; };
 	
-	var markCellEvent = new EventManager(eventKey);
-	this.getMarkCellEvent = function() { return markCellEvent; }
+	var markCellEvent = new Event(eventKey);
+	this.getMarkCellEvent = function() { return markCellEvent; };
 		
 	var _cells = [];
 	var createMouseClickListener = function(x, y) {
-		with (SwingGui) {
-			return function(mouseEvent) {
-				if (mouseEvent.getID() === mouseEvent.MOUSE_PRESSED) {
-					if (SwingUtilities.isLeftMouseButton(mouseEvent)) {
-						clickCellEvent.fire(eventKey, x, y);
-					} else if (SwingUtilities.isRightMouseButton(mouseEvent)) {
-						markCellEvent.fire(eventKey, x, y);
-					};
-				}
-			};
-		}
-	};
-	with (SwingGui) {
-		var grid = new GridLayout(cells.length, cells[cells.length - 1].length, 4, 4);
-		panel = new JPanel(grid);
-		for (var i in cells) {
-			_cells.push([]);
-			for (var j in cells[i]) {
-				var button = new JButton();
-				button.setBackground(java.awt.Color.GRAY);
-				button.setBorder
-				panel.add(button);
-				_cells[i].push(button);
-				button.addMouseListener(createMouseClickListener(i, j));
+		return function(mouseEvent) {
+			if (mouseEvent.getID() === mouseEvent.MOUSE_PRESSED) {
+				if (swing.SwingUtilities.isLeftMouseButton(mouseEvent)) {
+					clickCellEvent.fire(eventKey, x, y);
+				} else if (swing.SwingUtilities.isRightMouseButton(mouseEvent)){
+					markCellEvent.fire(eventKey, x, y);
+				};
 			}
+		};
+	};
+	
+	var grid = new swing.GridLayout(
+			cells.length, cells[cells.length - 1].length, 4, 4);
+	panel = new swing.JPanel(grid);
+	for (var i in cells) {
+		_cells.push([]);
+		for (var j in cells[i]) {
+			var button = new swing.JButton();
+			button.setBackground(swing.Color.GRAY);
+			panel.add(button);
+			_cells[i].push(button);
+			button.addMouseListener(createMouseClickListener(i, j));
 		}
 	}
 	

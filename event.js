@@ -1,16 +1,16 @@
-$.include('utils.js')
+$.include('utils.js');
 
-//class EventManager
-function EventManager(_activatorKey) {
+//class Event
+function Event(_activatorKey) {
 
 	var activatorKey = _activatorKey;
-	this.getActivatorKey = function() { return activatorKey; }
+	this.getActivatorKey = function() { return activatorKey; };
 	
 	var listeners = [];
 	
 	this.addListener = function(listener) {
 		listeners.push(listener);
-	}
+	};
 	
 	this.removeListener = function(listener) {
 		var i = listeners.length;
@@ -19,7 +19,7 @@ function EventManager(_activatorKey) {
 				listeners.splice(i, 1);
 			}
 		}
-	}
+	};
 	
 	/** Fires event with specified arguments, passed to all listeners.
 	 *  If activation key was setted due constructing instance, this key 
@@ -44,7 +44,7 @@ function EventManager(_activatorKey) {
 			var listener = listeners[i];
 			listener.apply(null, args);
 		}
-	}	
+	};
 	
 	this.toString = function() {
 		var strs = [];
@@ -52,5 +52,5 @@ function EventManager(_activatorKey) {
 			strs.push(listeners[i]);
 		}
 		return strs.join('\n');
-	}
+	};
 }

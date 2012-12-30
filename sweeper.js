@@ -1,14 +1,8 @@
-$.include('utils.js')
-$.include('event_manager.js')
-$.include('fsm.js')
-$.include('enum.js')
-
-//class Cell
-function Cell(clicked, content, mark) {
-	this.clicked = clicked;
-	this.content = content;
-	this.mark = mark;
-}
+$.include('utils.js');
+$.include('event.js');
+$.include('state_manager.js');
+$.include('enum.js');
+$.include('cell.js');
 
 var Content = new Enum ([
 	'NONE', 'MINE', 'ONE', 'TWO', 'THREE', 'FOUR', 
@@ -35,7 +29,7 @@ function Sweeper(_x, _y, _mines) {
 	this.getMines = function() { return mines; };
 	
 	var cells = new Array();
-	this.getCells = function() { return cells; }
+	this.getCells = function() { return cells; };
 
 	//generate cells
 	{
@@ -98,28 +92,28 @@ function Sweeper(_x, _y, _mines) {
 	//Events
 	{
 		var eventKey = new Object();
-		var minesRemainedChangedEvent = new EventManager(eventKey);
-		this.getMinesRemainedChangedEvent = function() { return minesRemainedChangedEvent; }
+		var minesRemainedChangedEvent = new Event(eventKey);
+		this.getMinesRemainedChangedEvent = function() { return minesRemainedChangedEvent; };
 		
-		var secondsChangedEvent = new EventManager(eventKey);
-		this.getSecondsChangedEvent = function() { return secondsChangedEvent; }
+		var secondsChangedEvent = new Event(eventKey);
+		this.getSecondsChangedEvent = function() { return secondsChangedEvent; };
 		
-		var refreshCellEvent = new EventManager(eventKey);
-		this.getRefreshCellEvent = function() { return refreshCellEvent; }
+		var refreshCellEvent = new Event(eventKey);
+		this.getRefreshCellEvent = function() { return refreshCellEvent; };
 		
-		var gameOverEvent = new EventManager(eventKey);
-		this.getGameOverEvent = function() { return gameOverEvent; }
+		var gameOverEvent = new Event(eventKey);
+		this.getGameOverEvent = function() { return gameOverEvent; };
 		
-		var gameFinishedEvent = new EventManager(eventKey);
-		this.getGameFinishedEvent = function() { return gameFinishedEvent; }
+		var gameFinishedEvent = new Event(eventKey);
+		this.getGameFinishedEvent = function() { return gameFinishedEvent; };
 	}//end events
 	
-	var stateManager = new FSM(State.BEGIN);
-	this.getStateManager = function() { return stateManager; }
+	var stateManager = new StateManager(State.BEGIN);
+	this.getStateManager = function() { return stateManager; };
 			
-	var timer;
+	var timer = null;
 	var seconds = 0;
-	this.getSeconds = function() { return seconds; }
+	this.getSeconds = function() { return seconds; };
 		
 	//initialize state manager with transitions
 	{
@@ -142,7 +136,7 @@ function Sweeper(_x, _y, _mines) {
 		
 		stateManager.addTransition(State.BEGIN, State.RUNNING, 
 			function() {
-				timer = java.util.Timer(true) //daemon
+				timer = java.util.Timer(true); //daemon
 				timer.schedule(new Packages.by.ales.minesweeper.scripting.RunnableTimerTask(
 					function() {
 						secondsChangedEvent.fire(eventKey, ++seconds); 

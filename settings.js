@@ -9,6 +9,6 @@ function Settings(x, y, mines) {
 		return  typeof(this) === typeof(other) &&
 				this.x === other.x && 
 				this.y === other.y &&
-				this.mines === other.mines
-	}
+				this.mines === other.mines;
+	};
 }

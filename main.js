@@ -1,4 +1,4 @@
-$.include('game.js')
+$.include('game.js');
 
-var controller = new Game();
-controller.start();
+var game = new Game();
+game.start();
