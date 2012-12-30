@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project default="jar" basedir=".">
+	
+	<target name="jar">
+	    
+		<jar destfile="dist/minesweeper.jar" >
+		    <fileset dir="bin"/>
+		    <!--<fileset dir="jargs"/>-->
+		    <manifest>
+		     	<attribute name="Main-Class"
+		            		value="by.ales.minesweeper.Main"/>
+			</manifest>
+		</jar>
+	</target>
+	
+</project>
