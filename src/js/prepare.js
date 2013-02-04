@@ -15,3 +15,8 @@ this.namespace = function(name, creator) {
 		creator.apply(ns, null);
 	}
 };
+
+this.loadImage = function(path) {
+	var stream = $.getClass().getResourceAsStream(path);
+	return javax.imageio.ImageIO.read(stream);
+};
