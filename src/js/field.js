@@ -70,7 +70,7 @@ function Field(cells, cellSize) {
 			button.addMouseListener(createMouseClickListener(i, j));
 		}
 	}
-	panel.setPreferredSize(new swing.Dimension(cells[0].length, cells.length));
+	panel.setPreferredSize(new swing.Dimension(cells[0].length * cellSize, cells.length * cellSize));
 	
 	this.refreshCell = function(cell, x, y, state) {
 		//reusable local functions

@@ -7,10 +7,12 @@ function MainWindow() {
 	var swing = new JavaImporter(
 			java.awt.FlowLayout,
 			java.awt.GridLayout,
+			java.awt.BorderLayout,
 			javax.swing,
 		    javax.swing.event,
 		    javax.swing.border,
-		    java.awt.event);
+		    java.awt.event,
+		    java.awt.Dimension);
 	
 	var currentFrame = new swing.JFrame();
 	currentFrame.setLocationByPlatform(true);
@@ -25,8 +27,14 @@ function MainWindow() {
 	this.getNewGameEvent = function() { return newGameEvent; };
 	
 	
-	this.show = function(sweeper, cellSize) {		
-		var field = new Field(sweeper.getCells(), cellSize);
+	this.show = function(sweeper, cellSize) {
+		var field = new Field(sweeper.getCells(), cellSize); //local short name
+		if (currentField) {
+			currentField.dispose();
+			currentFrame.getContentPane().removeAll();
+		}
+		currentField = field;
+		
 		sweeper.getRefreshCellEvent().addListener(function(cell, x, y) {
 			field.refreshCell(cell, x, y, 
 					sweeper.getStateManager().getCurrentState());
@@ -81,21 +89,17 @@ function MainWindow() {
 		sweeper.getGameFinishedEvent().addListener(function() {
 			new swing.JDialog(currentFrame, 'score', false).show();
 		});
+		
 		var x = sweeper.getCells()[0].length;
 		var y = sweeper.getCells().length;
 		var xSize = x * cellSize;
 		var ySize = y * cellSize + menuBar.getHeight();
-		//menuBar.setSize(200, 300);
 		currentFrame.setSize(xSize, ySize);
-		currentFrame.setResizable(false);
 		
-		if (currentField) {
-			currentField.dispose();
-		}
-		currentField = field;
+		var scroller = new swing.JScrollPane(field.getPanel());
+		currentFrame.getContentPane().add(scroller);
 		
-		currentFrame.getContentPane().add(field.getPanel());
-		
+		currentFrame.pack();
 		currentFrame.setVisible(true);
 	};
 	
