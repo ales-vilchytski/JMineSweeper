@@ -65,12 +65,12 @@ function Field(cells, cellSize) {
 			button.setBorder(swing.BorderFactory.createRaisedBevelBorder());
 			button.setBackground(swing.Color.LIGHT_GRAY);
 			button.setFont(font);
+			button.setPreferredSize(new swing.Dimension(cellSize, cellSize));
 			panel.add(button);
 			_cells[i].push(button);
 			button.addMouseListener(createMouseClickListener(i, j));
 		}
 	}
-	panel.setPreferredSize(new swing.Dimension(cells[0].length * cellSize, cells.length * cellSize));
 	
 	this.refreshCell = function(cell, x, y, state) {
 		//reusable local functions

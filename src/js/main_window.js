@@ -12,11 +12,43 @@ function MainWindow() {
 		    javax.swing.event,
 		    javax.swing.border,
 		    java.awt.event,
-		    java.awt.Dimension);
+		    java.awt.Dimension,
+		    java.awt.GraphicsEnvironment);
 	
 	var currentFrame = new swing.JFrame();
 	currentFrame.setLocationByPlatform(true);
 	currentFrame.setDefaultCloseOperation(swing.JFrame.EXIT_ON_CLOSE);
+	var resizingListener = {
+		maxX : 10, maxY : 10,
+		maxWidth : swing.GraphicsEnvironment.getLocalGraphicsEnvironment().
+        	getMaximumWindowBounds().width,
+        maxHeight : swing.GraphicsEnvironment.getLocalGraphicsEnvironment().
+        	getMaximumWindowBounds().height,
+        componentResized : function(event) {
+			var frame = event.getSource();
+			var width = frame.getWidth();
+            var height = frame.getHeight();
+            var resize = false;
+            var x = (this.maxX < this.maxWidth) ? (this.maxX) : (this.maxWidth);
+            var y = (this.maxY < this.maxHeight) ? (this.maxY) : (this.maxHeight);
+            if (width > x) {
+                width = x;
+                resize = true;
+            } 
+            if (height > y) {
+                height = y;
+                resize = true;
+            }
+            if (resize) {
+                frame.setSize(width, height);
+            }
+		},
+		componentShown : function() {},
+		componentMoved : function() {},
+		componentHidden : function() {},
+	};
+	currentFrame.addComponentListener(
+			new JavaAdapter(swing.ComponentListener, resizingListener));
 	var currentField = null;
 	
 	var settingsWindow = new SettingsWindow(currentFrame);
@@ -25,8 +57,7 @@ function MainWindow() {
 	var key = new Object();
 	var newGameEvent = new Event(key);
 	this.getNewGameEvent = function() { return newGameEvent; };
-	
-	
+		
 	this.show = function(sweeper, cellSize) {
 		var field = new Field(sweeper.getCells(), cellSize); //local short name
 		if (currentField) {
@@ -90,16 +121,12 @@ function MainWindow() {
 			new swing.JDialog(currentFrame, 'score', false).show();
 		});
 		
-		var x = sweeper.getCells()[0].length;
-		var y = sweeper.getCells().length;
-		var xSize = x * cellSize;
-		var ySize = y * cellSize + menuBar.getHeight();
-		currentFrame.setSize(xSize, ySize);
-		
 		var scroller = new swing.JScrollPane(field.getPanel());
-		currentFrame.getContentPane().add(scroller);
+		currentFrame.setContentPane(scroller);
 		
 		currentFrame.pack();
+		resizingListener.maxX = currentFrame.getSize().width;
+		resizingListener.maxY = currentFrame.getSize().height;
 		currentFrame.setVisible(true);
 	};
 	
