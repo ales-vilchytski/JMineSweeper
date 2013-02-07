@@ -24,6 +24,8 @@ function SettingsWindow(parent, _settings /** initial settings */) {
 	var settingsWindow = null; //Swing implementation of window
 	this.getWindow = function() { return settingsWindow; };
 	
+	var xField = null, yField = null, minesField = null;
+	
 	this.show = function() {
 		if (!settingsWindow) { //lazy init
 			settingsWindow = new swing.JDialog(parent, 'Settings', true);
@@ -31,15 +33,15 @@ function SettingsWindow(parent, _settings /** initial settings */) {
 			settingsWindow.setLayout(new swing.GridLayout(4, 2));
 				
 			settingsWindow.add(new swing.JLabel('x'));
-			var xField = new swing.JTextField(String(5));
+			xField = new swing.JTextField();
 			settingsWindow.add(xField);
 	
 			settingsWindow.add(new swing.JLabel('y'));
-			var yField = new swing.JTextField(String(5));
+			yField = new swing.JTextField();
 			settingsWindow.add(yField);
 				
 			settingsWindow.add(new swing.JLabel('Mines'));
-			var minesField = new swing.JTextField(String(5));
+			minesField = new swing.JTextField();
 			settingsWindow.add(minesField);
 				
 			var okButton = new swing.JButton('Ok');
@@ -59,6 +61,10 @@ function SettingsWindow(parent, _settings /** initial settings */) {
 			settingsWindow.add(okButton);
 			settingsWindow.add(cancelButton);
 		}
+		
+		xField.setText(String(settings.x));
+		yField.setText(String(settings.y));
+		minesField.setText(String(settings.mines));
 		
 		settingsWindow.show();
 		return settings;

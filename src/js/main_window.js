@@ -116,11 +116,7 @@ function MainWindow() {
 				});
 		}
 		//end set menu
-		
-		sweeper.getGameFinishedEvent().addListener(function() {
-			new swing.JDialog(currentFrame, 'score', false).show();
-		});
-		
+				
 		var scroller = new swing.JScrollPane(field.getPanel());
 		currentFrame.setContentPane(scroller);
 		
@@ -130,4 +126,16 @@ function MainWindow() {
 		currentFrame.setVisible(true);
 	};
 	
+	this.showScore = function(score) {
+		var dialog = new swing.JDialog(
+				currentFrame, 
+				'Congratulations!', 
+				false);
+		var lbl = new swing.JLabel('Your score: ' + score, swing.JLabel.CENTER);
+		lbl.setPreferredSize(new swing.Dimension(200, 80));
+		dialog.getContentPane().add(lbl);
+		dialog.setLocationByPlatform(true);
+		dialog.pack();
+		dialog.show();
+	};
 }

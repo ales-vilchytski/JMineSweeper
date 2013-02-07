@@ -6,8 +6,8 @@ $.include('cell.js');
 
 //class Sweeper
 function Sweeper(_x, _y, _mines) {	
-	var x = (_x > 5) ? (_x) : (5);
-	var y = (_y > 5) ? (_y) : (5);
+	var x = (_x > 2) ? (_x) : (2);
+	var y = (_y > 2) ? (_y) : (2);
 	var mines = (_mines > 1) ? ( (_mines < x * y) ? (_mines) : (x * y - 1) ) 
 							 : (1);
 	
