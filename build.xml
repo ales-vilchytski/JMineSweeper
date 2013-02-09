@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project default="jar" basedir=".">
 	
-	<target name="jar">
+	<target name="jar" depends='test'>
 	    
 		<jar destfile="dist/minesweeper.jar" >
 		    <fileset dir="bin"/>
@@ -11,6 +11,24 @@
 		            		value="by.ales.minesweeper.Main"/>
 			</manifest>
 		</jar>
+	</target>
+	
+	<property name='testdir' value='src/test'/>
+	
+	<taskdef name='rhinounit' 
+			 classname='by.ales.minesweeper.scripting.JTestExecutor' 
+			 classpath='bin'/>
+	
+	<target name='test'>
+		<rhinounit	options="{verbose:true, stackTrace:true}"
+					haltOnFirstFailure="true"
+					jsDir="/js"
+					prepareScript="prepare.js"
+					rhinoUnitDir="${testdir}/js/rhinounit_1_2_1">
+			<fileset dir="${testdir}/js">
+				<include name="*test.js"/>
+			</fileset>
+		</rhinounit>
 	</target>
 	
 </project>

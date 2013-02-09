@@ -1,6 +1,8 @@
 package by.ales.minesweeper.scripting;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.InputStream;
@@ -52,8 +54,16 @@ public final class JScriptExecutor {
 		return engine;
 	}
 	
-	public Object execute(String filename) throws ScriptException {
-		return executeFile(filename);
+	public Object execute(String relPath) throws ScriptException {
+		return executeFile(relPath);
+	}
+	
+	public Object execute(File source) throws ScriptException {
+		try {
+			return executeFile(source.getPath(), new FileInputStream(source));
+		} catch (FileNotFoundException e) {
+			throw new ScriptException(e);
+		}
 	}
 	
 	public void include(String filename) throws ScriptException {
@@ -64,7 +74,7 @@ public final class JScriptExecutor {
 	
 	protected boolean firstExec = true;
 	
-	private Object executeFile(String filename) throws ScriptException {
+	private Object executeFile(String id, InputStream source) throws ScriptException {
 		if (firstExec) {
 			firstExec = false;
 			if (initScriptFilename != null && !initScriptFilename.equals("")) {
@@ -72,14 +82,23 @@ public final class JScriptExecutor {
 			}
 		}
 		try {
-			executedIds.add(filename);
-			getEngine().put(ScriptEngine.FILENAME, filename);
+			executedIds.add(id);
+			getEngine().put(ScriptEngine.FILENAME, id);
 
-			String file = jsDir + "/" + filename;
-			InputStream stream = getClass().getResourceAsStream(file);
-			if (stream == null) throw new FileNotFoundException(file);
 			return getEngine().eval(
-				new BufferedReader(new InputStreamReader(stream)));
+				new BufferedReader(new InputStreamReader(source)));
+		} catch (Exception e) {
+			throw new ScriptException(e);
+		}
+	}
+	
+	private Object executeFile(String relPath) throws ScriptException {
+		String file = jsDir + "/" + relPath;
+		InputStream stream = getClass().getResourceAsStream(file);
+	
+		try {
+			if (stream == null) throw new FileNotFoundException(file);
+			return executeFile(relPath, stream);
 		} catch (Exception e) {
 			throw new ScriptException(e);
 		}

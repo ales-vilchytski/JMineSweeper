@@ -14,3 +14,4 @@
 	- scores
 * Add following constants:
 	- max field size (x, y)
+* Separate script executing and testing and game. Create new project or module.
