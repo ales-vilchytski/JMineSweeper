@@ -4,13 +4,13 @@ function Score(_name, _score) {
 	var name = null;
 	this.getName = function() { return name; };
 	this.setName = function(__name) {
-		name = __name || 'Anonymous';
+		name = String(pick(__name, 'Anonymous'));
 	};
 	
 	var score = null;
 	this.getScore = function() { return score; };
 	this.setScore = function(__score) { 
-		score = Number(__score) || 0;
+		score = Number(pick(__score, 0));
 	};
 	
 	this.setName(_name);

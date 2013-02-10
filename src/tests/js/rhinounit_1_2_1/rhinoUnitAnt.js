@@ -112,6 +112,9 @@ function runTest(file) {
 			}
 			tests[testName]();
 			assert.test();
+			if (options.verbose) {
+				self.log('Test passed: ' + testName);
+			}
 		} catch (e) {
 			if (e.constructor === AssertionException) {
 				failingTests++;
@@ -125,6 +128,7 @@ function runTest(file) {
 		if (superTearDown) {
 			superTearDown();
 		}
+		
 	}
 
 	var before = {}, after = {};

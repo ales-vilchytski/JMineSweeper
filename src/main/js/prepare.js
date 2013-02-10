@@ -22,5 +22,5 @@ this.loadImage = function(path) {
 };
 
 this.pick = function(arg, def) {
-	return (typeof arg == 'undefined' ? def : arg);
+	return ((typeof arg) == 'undefined' ? def : arg);
 };

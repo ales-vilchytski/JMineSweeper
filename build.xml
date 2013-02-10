@@ -24,7 +24,7 @@
 	
 	<target name='test'>
 		<jstest	options="{verbose:true, stackTrace:true}"
-				haltOnFirstFailure="true"
+				haltOnFirstFailure="false"
 				jsDir="/js"
 				prepareScript="prepare.js"
 				rhinoUnitDir="${testdir}/js/rhinounit_1_2_1">
