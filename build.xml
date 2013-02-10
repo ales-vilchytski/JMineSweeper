@@ -4,7 +4,7 @@
 	<target name="jar" depends='test'>
 	    
 		<jar destfile="dist/minesweeper.jar" >
-		    <fileset dir="bin"/>
+		    <fileset dir="bin/main"/>
 		    <manifest>
 		     	<attribute  name="Main-Class"
 		            		value="by.ales.minesweeper.Main"/>
@@ -12,12 +12,13 @@
 		</jar>
 	</target>
 	
-	<property name='testdir' value='bin/test'/>
+	<property name='testdir' value='bin/tests'/>
 	
 	<taskdef name='jstest' 
 			 classname='by.ales.minesweeper.scripting.JTestExecutor' >
 		<classpath>
-			<pathelement path='bin'/>
+			<pathelement path='bin/main'/>
+			<pathelement path='bin/tests'/>
 		</classpath>
 	</taskdef>
 	

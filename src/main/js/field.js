@@ -47,10 +47,10 @@ function Field(cells, cellSize) {
 				java.awt.Image.SCALE_SMOOTH));
 	}
 	var Icons = {
-		MINE: icon('/img/mine.png'),
-		FLAG: icon('/img/flag.png'),
-		CROSS: icon('/img/cross.png'),
-		QUESTION: icon('/img/question.png'),
+		MINE: icon('/resources/img/mine.png'),
+		FLAG: icon('/resources/img/flag.png'),
+		CROSS: icon('/resources/img/cross.png'),
+		QUESTION: icon('/resources/img/question.png'),
 	};
 	
 	var grid = new swing.GridLayout(
