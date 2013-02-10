@@ -1,0 +1,27 @@
+//Class score
+function Score(_name, _score) {
+	
+	var name = null;
+	this.getName = function() { return name; };
+	this.setName = function(__name) {
+		name = __name || 'Anonymous';
+	};
+	
+	var score = null;
+	this.getScore = function() { return score; };
+	this.setScore = function(__score) { 
+		score = Number(__score) || 0;
+	};
+	
+	this.setName(_name);
+	this.setScore(_score);
+	
+	this.toString = function() {
+		return this.getName() + ' ' + this.getScore();
+	};
+}
+
+Score.fromString = function(str) {
+	var vals = str.split(' ');
+	return new Score(vals[0], vals[1]);
+};

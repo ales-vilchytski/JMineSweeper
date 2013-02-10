@@ -20,3 +20,7 @@ this.loadImage = function(path) {
 	var stream = $.getClass().getResourceAsStream(path);
 	return javax.imageio.ImageIO.read(stream);
 };
+
+this.pick = function(arg, def) {
+	return (typeof arg == 'undefined' ? def : arg);
+};
