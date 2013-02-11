@@ -8,8 +8,17 @@ function Preferences(key) {
 	var prefs = java.util.prefs.Preferences.systemNodeForPackage(
 			java.lang.Class.forName(key, true, $.getClass().getClassLoader()));
 	
-	var KEYS = Preferences.KEYS;
-	
+	var KEYS = {
+		X_SIZE : null,
+		Y_SIZE : null,
+		MINES : null,
+		SCORES : null,
+		CELL_SIZE : null,
+		FONT_RATIO : null,
+		MAX_SCORES : null,
+	};
+	Enum.apply(KEYS);
+
 	this.getX = function() { 
 		return Number(prefs.get(KEYS.X_SIZE, 5));
 	};
@@ -30,12 +39,20 @@ function Preferences(key) {
 	this.setMines = function(mines) {
 		prefs.put(KEYS.MINES, mines);
 	};
+
+	this.getMaxScores = function() {
+		return Number(prefs.get(KEYS.MAX_SCORES, 5));
+	};
+	this.setMaxScores = function(max_scores) {
+		prefs.put(KEYS.MAX_SCORES, max_scores);
+	};
 	
-	var SCORES_SEP = Preferences.SCORES_SEP;
-	var DEF_SCORES = Preferences.DEF_SCORES;
-	
+	var DEF_SCORES = [new Score('Master', 1000), 
+	                  new Score('Beginner', 500),
+	                  new Score('Rookie', 100)];
+
 	this.getScores = function() { 
-		//scores are saved as JSON
+		// scores are saved as JSON
 		try {
 			var scores = [];
 			var json = JSON.parse(String(prefs.get(KEYS.SCORES, '')));
@@ -63,9 +80,9 @@ function Preferences(key) {
 				}
 			}
 			forJson.sort(function(left, right) {
-				return left.score < right.score;
+				return left.score < right.score; //descending
 			});
-			forJson.slice(0, 5);
+			forJson = forJson.slice(0, this.getMaxScores());
 			
 			var json = JSON.stringify(forJson);
 			prefs.put(KEYS.SCORES, json);
@@ -86,22 +103,5 @@ function Preferences(key) {
 	};
 	this.setFontRatio = function(fontRatio) {
 		prefs.put(KEYS.FONT_RATIO, fontRatio);
-	};
-			
+	};			
 }
-
-Preferences.KEYS = {
-	X_SIZE : null,
-	Y_SIZE : null,
-	MINES : null,
-	SCORES : null,
-	CELL_SIZE : null,
-	FONT_RATIO : null,
-};
-Enum.apply(Preferences.KEYS);
-Preferences.SCORES_SEP = '|';
-Preferences.DEF_SCORES = [ 
-                          new Score('Master', 1000),
-                          new Score('Beginner', 500), 
-                          new Score('Rookie', 100) 
-                          ];

@@ -20,8 +20,3 @@ function Score(_name, _score) {
 		return this.getName() + ' ' + this.getScore();
 	};
 }
-
-Score.fromString = function(str) {
-	var vals = str.split(' ');
-	return new Score(vals[0], vals[1]);
-};

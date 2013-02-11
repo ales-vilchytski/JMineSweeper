@@ -14,6 +14,7 @@ testCases(test,
 			X : 10,
 			Y : 11,
 			Mines : 12,
+			MaxScores : 4,
 			CellSize : 13,
 			FontRatio : 14
 		};
@@ -37,6 +38,28 @@ testCases(test,
 		assert.that(scores.length, eq(1));
 		assert.that(scores[0].getName(), eq(name));
 		assert.that(scores[0].getScore(), eq(score));
+	},
+	
+	function stores6ScoresDescending() {
+		var scores = [new Score('a', 1), 
+		              new Score('b', 2),
+		              new Score('c', 3),
+		              new Score('d', 4),
+		              new Score('e', 5),
+		              new Score('f', 6),
+		              new Score('g', 7)];
+		var preferences = new Preferences(PREF_KEY);
+		preferences.setMaxScores(6);
+		preferences.setScores(scores);
+		
+		var anotherPreferences = new Preferences(PREF_KEY);
+		var anotherScores = anotherPreferences.getScores();
+		assert.that(anotherScores.length, eq(preferences.getMaxScores()));
+		
+		for (var i = 0; i < anotherScores.length; ++i) {
+			var shift = scores.length - i - 1;
+			assert.that(anotherScores[i].toString(), eq(scores[shift].toString()));
+		}
 	}
 
 );

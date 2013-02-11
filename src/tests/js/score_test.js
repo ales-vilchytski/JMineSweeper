@@ -1,19 +1,7 @@
 $.include('score.js');
 
 testCases(test, 
-	
-	function parsableFromString() {
-		var str = 'Name 8';
-		var score = Score.fromString(str);
-		assert.that(score.getName(), eq('Name'));
-		assert.that(score.getScore(), eq(8));
-	},
-	
-	function marshalsToString() {
-		var score = new Score('Anon', 10);
-		assert.that(score.toString(), eq('Anon 10'));
-	},
-		
+			
 	function checkSettersAndGettersAndDefaults() {
 		//local reusable code
 		function checkdef(score) {
