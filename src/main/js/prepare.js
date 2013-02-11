@@ -1,3 +1,5 @@
+$.include('preferences.js');
+
 this.namespace = function(name, creator) {
 	
 	var parts = name.split('.');
@@ -24,3 +26,7 @@ this.loadImage = function(path) {
 this.pick = function(arg, def) {
 	return ((typeof arg) == 'undefined' ? def : arg);
 };
+
+namespace('minesweeper.globals', function() {
+	this.preferences = new Preferences('by.ales.minesweeper.Main');
+});

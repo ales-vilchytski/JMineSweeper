@@ -4,7 +4,7 @@ $.include('cell.js');
 $.include('sweeper.js');
 
 //class Field
-function Field(cells, cellSize) {
+function Field(cells, cellSize, fontSizePx) {
 	
 	var swing = new JavaImporter(
 			java.awt.FlowLayout,
@@ -42,8 +42,8 @@ function Field(cells, cellSize) {
 	function icon(path) { //local icon creator
 		return new swing.ImageIcon(loadImage(path).
 			getScaledInstance(
-				(cellSize) ? (cellSize - cellSize/5) : (30), //+ borders
-				(cellSize) ? (cellSize - cellSize/5) : (30), 
+				cellSize - cellSize/5, //+ borders
+				cellSize - cellSize/5, 
 				java.awt.Image.SCALE_SMOOTH));
 	}
 	var Icons = {
@@ -57,7 +57,7 @@ function Field(cells, cellSize) {
 			cells.length, cells[cells.length - 1].length, 0, 0);
 	panel = new swing.JPanel(grid);
 	panel.setBorder(swing.BorderFactory.createLoweredBevelBorder());
-	var font = new swing.Font(swing.Font.TYPE1_FONT, swing.Font.BOLD, cellSize / 2);
+	var font = new swing.Font(swing.Font.TYPE1_FONT, swing.Font.BOLD, fontSizePx);
 	for (var i in cells) {
 		_cells.push([]);
 		for (var j in cells[i]) {

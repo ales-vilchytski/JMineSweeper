@@ -58,8 +58,8 @@ function MainWindow() {
 	var newGameEvent = new Event(key);
 	this.getNewGameEvent = function() { return newGameEvent; };
 		
-	this.show = function(sweeper, cellSize) {
-		var field = new Field(sweeper.getCells(), cellSize); //local short name
+	this.show = function(sweeper, cellSize, fontRatio) {
+		var field = new Field(sweeper.getCells(), cellSize, fontRatio); //local short name
 		if (currentField) {
 			currentField.dispose();
 			currentFrame.getContentPane().removeAll();

@@ -14,7 +14,7 @@ function Preferences(key) {
 		MINES : null,
 		SCORES : null,
 		CELL_SIZE : null,
-		FONT_RATIO : null,
+		FONT_SIZE : null,
 		MAX_SCORES : null,
 	};
 	Enum.apply(KEYS);
@@ -92,16 +92,16 @@ function Preferences(key) {
 	};
 	
 	this.getCellSize = function() { 
-		return Number(prefs.get(KEYS.CELL_SIZE, 25));
+		return Number(prefs.get(KEYS.CELL_SIZE, 40));
 	};
 	this.setCellSize = function(cellSize) {
 		prefs.put(KEYS.CELL_SIZE, cellSize);
 	};
 	
-	this.getFontRatio = function() { 
-		return Number(prefs.get(KEYS.FONT_RATIO, 0.5));
+	this.getFontSize = function() { 
+		return Number(prefs.get(KEYS.FONT_RATIO, 25));
 	};
-	this.setFontRatio = function(fontRatio) {
+	this.setFontSize = function(fontRatio) {
 		prefs.put(KEYS.FONT_RATIO, fontRatio);
 	};			
 }

@@ -1,9 +1,10 @@
 $.include('sweeper.js');
 $.include('settings.js');
 $.include('main_window.js');
+$.include('preferences.js');
 
 //class Game
-function Game() {
+function Game(preferences) {
 	
 	this.start = function() {
 		newGame();
@@ -62,7 +63,10 @@ function Game() {
 			
 			mainWindow.showScore(score);
 		});
-		mainWindow.show(currentSweeper, 75);
+		
+		var cellSize = minesweeper.globals.preferences.getCellSize();
+		var fontSize = minesweeper.globals.preferences.getFontSize();
+		mainWindow.show(currentSweeper, cellSize, fontSize);
 	}
 	
 }

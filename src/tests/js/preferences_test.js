@@ -16,7 +16,7 @@ testCases(test,
 			Mines : 12,
 			MaxScores : 4,
 			CellSize : 13,
-			FontRatio : 14
+			FontSize : 14
 		};
 		for ( var field in testData) {
 			var preferences = new Preferences(PREF_KEY);
@@ -60,6 +60,17 @@ testCases(test,
 			var shift = scores.length - i - 1;
 			assert.that(anotherScores[i].toString(), eq(scores[shift].toString()));
 		}
+	},
+	
+	function throwsClassNotFoundOnWrongKey() {
+		shouldThrowException(
+			function() { new Preferences('wrong.class.name'); }, 
+			null, 
+			function(exception) {
+				if (exception.toString().lastIndexOf('java.lang.ClassNotFoundException') == -1) {
+					assert.fail('Exception is not ClassNotFoundException');
+				}
+			});
 	}
 
 );
