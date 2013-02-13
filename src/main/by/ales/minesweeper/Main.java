@@ -2,6 +2,8 @@ package by.ales.minesweeper;
 
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+import java.util.prefs.BackingStoreException;
+import java.util.prefs.Preferences;
 
 import javax.script.ScriptException;
 
@@ -16,6 +18,18 @@ public class Main {
 	private static final String VAR_KEY = "executorVar";
 	
 	public static void main(String[] args) throws ScriptException {
+		
+		if (args.length > 0) {
+			if (args[0].equals("clear")) {
+				try {
+					Preferences.userNodeForPackage(Main.class).clear();
+					
+				} catch (BackingStoreException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
 		
 		//defaults
 		String jsDir = "/js";

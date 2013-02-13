@@ -126,16 +126,39 @@ function MainWindow() {
 		currentFrame.setVisible(true);
 	};
 	
-	this.showScore = function(score) {
+	this.showEnterNameDialog = function(scores, score) {
 		var dialog = new swing.JDialog(
 				currentFrame, 
 				'Congratulations!', 
 				false);
-		var lbl = new swing.JLabel('Your score: ' + score, swing.JLabel.CENTER);
-		lbl.setPreferredSize(new swing.Dimension(200, 80));
-		dialog.getContentPane().add(lbl);
+		dialog.setModalityType(swing.JDialog.DEFAULT_MODALITY_TYPE);
+		
+		var lbl = new swing.JLabel('Your score: ' + score);
+		
+		var contentPane = dialog.getContentPane();
+		contentPane.setLayout(new swing.GridLayout(scores.length + 3, 1));
+		contentPane.add(lbl);
+		
+		var input = new swing.JTextField();
+		contentPane.add(input);
+		for (var i in scores) {
+			lbl = new swing.JLabel(scores[i].toString());
+			contentPane.add(lbl);
+		}
+		
+		var okButton = new swing.JButton('Ok');
+		okButton.addActionListener(function() {
+			dialog.setVisible(false);
+		});
+		contentPane.add(okButton);
+		
+		for (var i = 0; i < contentPane.getComponents().length; ++i) {
+			contentPane.getComponents()[i].setPreferredSize(new swing.Dimension(100, 20));
+		}
+		
 		dialog.setLocationByPlatform(true);
 		dialog.pack();
 		dialog.show();
+		return String(input.getText()); //convert to JS String
 	};
 }

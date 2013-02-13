@@ -4,7 +4,8 @@ function Score(_name, _score) {
 	var name = null;
 	this.getName = function() { return name; };
 	this.setName = function(__name) {
-		name = String(pick(__name, 'Anonymous'));
+		name = (__name == null || typeof __name == undefined || __name == '' ) ? 
+				('Anonymous') : (__name);
 	};
 	
 	var score = null;

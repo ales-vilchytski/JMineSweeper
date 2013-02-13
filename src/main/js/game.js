@@ -11,39 +11,20 @@ function Game(preferences) {
 	};
 	
 	var currentSweeper = null;
-	var settings = new Settings(5, 5, 5); //defaults
 	var mainWindow = new MainWindow();
 	mainWindow.getNewGameEvent().addListener( function() {
 		newGame();
 	});
-	mainWindow.getSettingsWindow().setSettings(settings);
+	mainWindow.getSettingsWindow().setSettings(preferences);
 	mainWindow.getSettingsWindow().getSettingsChangedEvent().addListener(
 		function(newSettings) {
 			newGame();
 		});
-
-	function cutSettings(settings) {
-		var maxX = 10;
-		var maxY = 10;
-		var minX = 2;
-		var minY = 2;
-		var x = settings.x, y = settings.y, m = settings.mines;
-		x = (x < maxX) ? ( (x < minX) ? (minX) : (x) ) 
-					   : (maxX);
-		y = (y < maxY) ? ( (y < minY) ? (minY) : (y) ) 
-					   : (maxY);
-		m = (m > 1) ? ( (m < x * y) ? (m) : (x * y - 1) ) 
-					: (1);
-		settings.x = x;
-		settings.y = y;
-		settings.mines = m;
-	};
 	
 	function newGame() {
-		cutSettings(settings);
-		var x = settings.x;
-		var y = settings.y;
-		var mines = settings.mines;
+		var x = preferences.getX();
+		var y = preferences.getY();
+		var mines = preferences.getMines();
 		
 		if (currentSweeper) {
 			currentSweeper.dispose();
@@ -61,11 +42,14 @@ function Game(preferences) {
 					80000 * mines * mines / (x * y) / (seconds + 50));
 			// ====
 			
-			mainWindow.showScore(score);
+			var scores = preferences.getScores();
+			var username = mainWindow.showEnterNameDialog(scores, score);
+			scores.push(new Score(username, score));
+			preferences.setScores(scores);
 		});
 		
-		var cellSize = minesweeper.globals.preferences.getCellSize();
-		var fontSize = minesweeper.globals.preferences.getFontSize();
+		var cellSize = preferences.getCellSize();
+		var fontSize = preferences.getFontSize();
 		mainWindow.show(currentSweeper, cellSize, fontSize);
 	}
 	

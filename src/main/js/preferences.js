@@ -17,7 +17,7 @@ function Preferences(key) {
 	 * In complicated cases custom accessors should be created. 
 	 */
 	
-	var prefs = java.util.prefs.Preferences.systemNodeForPackage(
+	var prefs = java.util.prefs.Preferences.userNodeForPackage(
 			java.lang.Class.forName(key, true, $.getClass().getClassLoader()));
 	
 	var FIELDS = {	//maps field name to key in preferences
