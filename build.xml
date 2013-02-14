@@ -1,16 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project default="jar" basedir=".">
 	
-	<target name="jar">
+	<target name="jar" depends='test'>
 	    
 		<jar destfile="dist/minesweeper.jar" >
-		    <fileset dir="bin"/>
-		    <!--<fileset dir="jargs"/>-->
+		    <fileset dir="bin/main"/>
 		    <manifest>
-		     	<attribute name="Main-Class"
+		     	<attribute  name="Main-Class"
 		            		value="by.ales.minesweeper.Main"/>
 			</manifest>
 		</jar>
+	</target>
+	
+	<property name='testdir' value='bin/tests'/>
+	
+	<taskdef name='jstest' 
+			 classname='by.ales.minesweeper.scripting.JTestExecutor' >
+		<classpath>
+			<pathelement path='bin/main'/>
+			<pathelement path='bin/tests'/>
+		</classpath>
+	</taskdef>
+	
+	<target name='test'>
+		<jstest	options="{verbose:true, stackTrace:true}"
+				haltOnFirstFailure="false"
+				ignoredGlobalVars="JSON"
+				jsDir="/js"
+				prepareScript="prepare.js"
+				rhinoUnitDir="${testdir}/js/rhinounit_1_2_1">
+			<fileset dir="${testdir}/js">
+				<include name="*test.js"/>
+			</fileset>
+		</jstest>
 	</target>
 	
 </project>
