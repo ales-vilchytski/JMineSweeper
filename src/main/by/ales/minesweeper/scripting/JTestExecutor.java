@@ -54,7 +54,7 @@ public class JTestExecutor extends Task {
 	
 	@Override 
 	public void execute() throws BuildException {
-		JScriptExecutor executor = new JScriptExecutor(prepareScript, "$");
+		JScriptExecutor executor = new JScriptExecutor("$");
 		Bindings bindings = executor.getEngine().getBindings(
 				ScriptContext.ENGINE_SCOPE);
 		
@@ -73,6 +73,7 @@ public class JTestExecutor extends Task {
 		
 		try {
 			executor.setJsDir(jsDir);
+			executor.include(prepareScript);
 			executor.execute(new File(rhinoUnitDir, "rhinoUnitUtil.js"));
 			executor.execute(new File(rhinoUnitDir, "rhinoUnitAnt.js"));
 		} catch (ScriptException e) {
