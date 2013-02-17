@@ -62,8 +62,9 @@ public class Main {
 			exc.printStackTrace();
 		}
 		
-		JScriptExecutor executor = new JScriptExecutor(init, var);
+		JScriptExecutor executor = new JScriptExecutor(var);
 		executor.setJsDir(jsDir);
+		executor.include(init);
 		executor.execute(main);
 	}
 }

@@ -1,8 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project default="jar" basedir=".">
+<project xmlns:ivy="antlib:org.apache.ivy.ant" 
+		 default="jar" basedir=".">
+	
+	<target name="resolve">
+        <ivy:resolve file="ivy.xml"/>
+        <ivy:cachepath pathid="ivy.path"/>
+    </target>
+    
+    <target name="retrieve" depends='resolve'>
+    	<ivy:retrieve sync='true'/>
+    </target>
 	
 	<target name="jar" depends='test'>
-	    
 		<jar destfile="dist/minesweeper.jar" >
 		    <fileset dir="bin/main"/>
 		    <manifest>
@@ -13,18 +22,32 @@
 	</target>
 	
 	<property name='testdir' value='bin/tests'/>
+	<path id='built.cpath'>
+		<pathelement path='bin/main'/>
+		<pathelement path='bin/tests'/>
+	</path>
 	
 	<taskdef name='jstest' 
 			 classname='by.ales.minesweeper.scripting.JTestExecutor' >
-		<classpath>
-			<pathelement path='bin/main'/>
-			<pathelement path='bin/tests'/>
-		</classpath>
+		<classpath refid='built.cpath'/>
 	</taskdef>
 	
-	<target name='test'>
+	<target name='test' depends='retrieve'>
+		<mkdir dir='tmp'/>
+		<junit haltonfailure='yes' fork='yes' forkmode='once' tempdir='tmp'>
+			<classpath>
+				<path refid='built.cpath'/>
+				<path refid='ivy.path'/>
+			</classpath>
+			<formatter type="plain" usefile="false" />
+			<batchtest>
+				<fileset dir='src/tests'>
+					<include name='**/*Test.java'/>
+				</fileset>
+			</batchtest>
+		</junit>
 		<jstest	options="{verbose:true, stackTrace:true}"
-				haltOnFirstFailure="false"
+				haltOnFirstFailure="true"
 				ignoredGlobalVars="JSON"
 				jsDir="/js"
 				prepareScript="prepare.js"
