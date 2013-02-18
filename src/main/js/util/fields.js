@@ -19,21 +19,23 @@ namespace('util', function() {
 	 * Class to store numeric Holder with restrictions
 	 * @extends Holder
 	 */
-	this.NumHolder = function(name, default_value, min, max) {
+	this.NumHolder = function(name, default_value, _min, _max) {
 		this.constructor.prototype.constructor.call(this, name, Number(default_value));
 		
 		var value = Number(default_value);
+		var min = Number(_min);
+		var max = Number(_max);
 		
 		/** @override */
 		this.getValue = function() { return value; };
 		
 		/** @override */
-		this.setValue = function(val) { 
+		this.setValue = function(val) {
 			if ((typeof val) == 'undefined') {
 				throw 'Value is not defined';
 			} else if (val == null) {
 				value = Number(default_value);
-			} else if (val < min || val > max) {
+			} else if (isNaN(Number(val)) || Number(val) < min || Number(val) > max) {
 				throw 'Value ' + val + ' not in range ' + min + '..' + max;
 			} else {
 				value = Number(val);

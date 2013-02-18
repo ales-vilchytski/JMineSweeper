@@ -6,12 +6,8 @@
         <ivy:resolve file="ivy.xml"/>
         <ivy:cachepath pathid="ivy.path"/>
     </target>
-    
-    <target name="retrieve" depends='resolve'>
-    	<ivy:retrieve sync='true'/>
-    </target>
 	
-	<target name="jar" depends='test'>
+	<target name="jar" depends='testAll'>
 		<jar destfile="dist/minesweeper.jar" >
 		    <fileset dir="bin/main"/>
 		    <manifest>
@@ -27,12 +23,16 @@
 		<pathelement path='bin/tests'/>
 	</path>
 	
+	<target name='testAll' depends='jtest,jstest'>
+		<echo>Testing</echo>
+	</target>
+	
 	<taskdef name='jstest' 
 			 classname='by.ales.minesweeper.scripting.JTestExecutor' >
 		<classpath refid='built.cpath'/>
 	</taskdef>
 	
-	<target name='test' depends='retrieve'>
+	<target name='jtest' depends='resolve'>
 		<mkdir dir='tmp'/>
 		<junit haltonfailure='yes' fork='yes' forkmode='once' tempdir='tmp'>
 			<classpath>
@@ -46,6 +46,9 @@
 				</fileset>
 			</batchtest>
 		</junit>
+	</target>
+	
+	<target name='jstest'>
 		<jstest	options="{verbose:true, stackTrace:true}"
 				haltOnFirstFailure="true"
 				ignoredGlobalVars="JSON"
@@ -53,7 +56,7 @@
 				prepareScript="prepare.js"
 				rhinoUnitDir="${testdir}/js/rhinounit_1_2_1">
 			<fileset dir="${testdir}/js">
-				<include name="*test.js"/>
+				<include name="**/*_test.js"/>
 			</fileset>
 		</jstest>
 	</target>
