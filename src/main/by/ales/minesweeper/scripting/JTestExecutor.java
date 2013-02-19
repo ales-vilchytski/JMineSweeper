@@ -1,6 +1,5 @@
 package by.ales.minesweeper.scripting;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -20,8 +19,7 @@ public class JTestExecutor extends Task {
 	private String ignoredGlobalVars = "";
 	private String haltOnFirstFailure = "true";
 	private String jsDir = "/js";
-	private String prepareScript = null;
-	private String rhinoUnitDir = "test/js/rhinounit_1_2_1";
+	private String startScript = "start.js";
 	private List<FileSet> filesets = new LinkedList<FileSet>();
 	
 	public void setOptions(String opts) {
@@ -40,14 +38,10 @@ public class JTestExecutor extends Task {
 		this.jsDir = jsDir;
 	}
 	
-	public void setPrepareScript(String prepare) {
-		this.prepareScript = prepare;
+	public void setStartScript(String start) {
+		this.startScript = start;
 	}
 	
-	public void setRhinoUnitDir(String rhinoUnitDir) {
-		this.rhinoUnitDir = rhinoUnitDir;
-	}
-
 	public void add(FileSet fileset) {
 		this.filesets.add(fileset);
 	}
@@ -73,9 +67,7 @@ public class JTestExecutor extends Task {
 		
 		try {
 			executor.setJsDir(jsDir);
-			executor.include(prepareScript);
-			executor.execute(new File(rhinoUnitDir, "rhinoUnitUtil.js"));
-			executor.execute(new File(rhinoUnitDir, "rhinoUnitAnt.js"));
+			executor.execute(startScript);
 		} catch (ScriptException e) {
 			throw new BuildException(e);
 		}

@@ -53,8 +53,7 @@
 				haltOnFirstFailure="true"
 				ignoredGlobalVars="JSON"
 				jsDir="/js"
-				prepareScript="prepare.js"
-				rhinoUnitDir="${testdir}/js/rhinounit_1_2_1">
+				startScript="start.js">
 			<fileset dir="${testdir}/js">
 				<include name="**/*_test.js"/>
 			</fileset>

@@ -64,30 +64,50 @@ public final class JScriptExecutor {
 		}
 	}
 	
+	private String idFromRelPath(String relPath) {
+		return jsDir + "/" + relPath;
+	}
+	
 	public Object execute(String relPath) throws ScriptException {
-		String file = jsDir + "/" + relPath;
+		String file = idFromRelPath(relPath);
 		InputStream stream = getClass().getResourceAsStream(file);
 		if (stream == null) {
 			throw new ScriptException("File not found - " + file);
 		}
 		try {
-			return execute(relPath, stream);
+			return execute(file, stream);
 		} catch (Exception e) {
 			throw new ScriptException(e);
 		}
 	}
 	
+	private String idFromFile(File source) {
+		return source.getPath();
+	}
+	
 	public Object execute(File source) throws ScriptException {
 		try {
-			return execute(source.getPath(), new FileInputStream(source));
+			return execute(idFromFile(source), new FileInputStream(source));
 		} catch (FileNotFoundException e) {
 			throw new ScriptException(e);
 		}
 	}
 	
+	public void include(String id, InputStream source) throws ScriptException {
+		if (!executedIds.contains(id)) {
+			execute(id, source);
+		}
+	}
+	
 	public void include(String relPath) throws ScriptException {
-		if (!executedIds.contains(relPath)) {
+		if (!executedIds.contains(idFromRelPath(relPath))) {
 			execute(relPath);
+		}
+	}
+	
+	public void include(File source) throws ScriptException {
+		if (!executedIds.contains(idFromFile(source))) {
+			execute(source);
 		}
 	}
 	

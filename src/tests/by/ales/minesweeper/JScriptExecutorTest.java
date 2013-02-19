@@ -14,72 +14,102 @@ import by.ales.minesweeper.scripting.JScriptExecutor;
 
 public class JScriptExecutorTest {
 
+	protected static final String COUNT_INCLUDES_JS = "count_includes.js";
 	protected JScriptExecutor executor = null;
-	protected final String jsDir = "/js/executor_tests";
-	protected final String scriptFilePrefix = "bin/tests/js/executor_tests/";
+	protected static final String JS_DIR = "/js/executor_tests";
+	protected static final String SCRIPT_DIR = "bin/tests/js/executor_tests/";
 	
 	@Before 
 	public void setUp() {
 		this.executor = new JScriptExecutor();
-		executor.setJsDir(jsDir);
+		executor.setJsDir(JS_DIR);
 	}
-	
-	@Test
-	public void testExecuteRelative() throws ScriptException {
-		Object res = executor.execute("string_return.js");
-		assertEquals("ok", res.toString());
-	}
-	
-	@Test 
-	public void testExecuteFile() throws ScriptException {
-		File test = new File(scriptFilePrefix + "string_return.js");
-		Object res = executor.execute(test);
-		assertEquals("ok", res.toString());
-	}
-	
+		
 	@Test 
 	public void testExecuteStream() throws FileNotFoundException, ScriptException {
-		File test = new File(scriptFilePrefix + "string_return.js");
+		File test = new File(SCRIPT_DIR + COUNT_INCLUDES_JS);
+		executor.getEngine().getBindings(ScriptContext.ENGINE_SCOPE).put("counter", 0);
 		Object res = executor.execute(test.getAbsolutePath(), new FileInputStream(test));
 		assertEquals("ok", res.toString());
-	}
-	
-	@Test
-	public void testIncludeRelative() throws ScriptException {
-		executor.getEngine().getBindings(ScriptContext.ENGINE_SCOPE).put("counter", 0);
-		executor.include("count_includes.js");
-		Object count = executor.getEngine().get("counter");
-		assertEquals("1.0", count.toString());
-	}
-
-	@Test 
-	public void testIncludeRelativeOnce() throws ScriptException {
-		executor.getEngine().getBindings(ScriptContext.ENGINE_SCOPE).put("counter", 0);
-		executor.include("count_includes.js");
+		
 		Object count = executor.getEngine().get("counter");
 		assertEquals("1.0", count.toString());
 		
-		executor.include("count_includes.js");
-		count = executor.getEngine().get("counter");
-		assertEquals("1.0", count.toString());
-	}
-	
-	@Test
-	public void testExecuteManyTimes() throws ScriptException {
-		executor.getEngine().getBindings(ScriptContext.ENGINE_SCOPE).put("counter", 0);
-		executor.execute("count_includes.js");
-		Object count = executor.getEngine().get("counter");
-		assertEquals("1.0", count.toString());
-		
-		executor.execute("count_includes.js");
+		executor.execute(test.getAbsolutePath(), new FileInputStream(test));
 		count = executor.getEngine().get("counter");
 		assertEquals("2.0", count.toString());
 	}
 	
 	@Test
+	public void testExecuteRelative() throws ScriptException {
+		executor.getEngine().getBindings(ScriptContext.ENGINE_SCOPE).put("counter", 0);
+		Object res = executor.execute(COUNT_INCLUDES_JS);
+		assertEquals("ok", res.toString());
+		
+		Object count = executor.getEngine().get("counter");
+		assertEquals("1.0", count.toString());
+		
+		executor.execute(COUNT_INCLUDES_JS);
+		count = executor.getEngine().get("counter");
+		assertEquals("2.0", count.toString());
+	}
+	
+	@Test 
+	public void testExecuteFile() throws ScriptException {
+		File test = new File(SCRIPT_DIR + COUNT_INCLUDES_JS);
+		executor.getEngine().getBindings(ScriptContext.ENGINE_SCOPE).put("counter", 0);
+		Object res = executor.execute(test);
+		assertEquals("ok", res.toString());
+		
+		Object count = executor.getEngine().get("counter");
+		assertEquals("1.0", count.toString());
+		
+		executor.execute(test);
+		count = executor.getEngine().get("counter");
+		assertEquals("2.0", count.toString());
+	}
+	
+	@Test 
+	public void testIncludeStream() throws ScriptException, FileNotFoundException {
+		File test = new File(SCRIPT_DIR + COUNT_INCLUDES_JS);
+		executor.getEngine().getBindings(ScriptContext.ENGINE_SCOPE).put("counter", 0);
+		executor.include(test.getPath(), new FileInputStream(test));
+		Object count = executor.getEngine().get("counter");
+		assertEquals("1.0", count.toString());
+		
+		executor.include(test.getPath(), new FileInputStream(test));
+		count = executor.getEngine().get("counter");
+		assertEquals("1.0", count.toString());
+	}
+
+	@Test 
+	public void testIncludeRelative() throws ScriptException {
+		executor.getEngine().getBindings(ScriptContext.ENGINE_SCOPE).put("counter", 0);
+		executor.include(COUNT_INCLUDES_JS);
+		Object count = executor.getEngine().get("counter");
+		assertEquals("1.0", count.toString());
+		
+		executor.include(COUNT_INCLUDES_JS);
+		count = executor.getEngine().get("counter");
+		assertEquals("1.0", count.toString());
+	}
+	
+	@Test
+	public void testIncludeFile() throws ScriptException {
+		executor.getEngine().getBindings(ScriptContext.ENGINE_SCOPE).put("counter", 0);
+		executor.include(new File(SCRIPT_DIR, COUNT_INCLUDES_JS));
+		Object count = executor.getEngine().get("counter");
+		assertEquals("1.0", count.toString());
+		
+		executor.include(new File(SCRIPT_DIR, COUNT_INCLUDES_JS));
+		count = executor.getEngine().get("counter");
+		assertEquals("1.0", count.toString());
+	}
+	
+	@Test
 	public void testDefaultExecutorVar() throws ScriptException {
 		JScriptExecutor executor = new JScriptExecutor();
-		executor.setJsDir(jsDir);
+		executor.setJsDir(JS_DIR);
 		assertEquals("$", executor.getExecutorVar());
 		
 		Object res = executor.execute("test_defvar.js");
@@ -89,7 +119,7 @@ public class JScriptExecutorTest {
 	@Test
 	public void testSetExecutorVar() throws ScriptException {
 		JScriptExecutor executor = new JScriptExecutor("ExecutorVar");
-		executor.setJsDir(jsDir);
+		executor.setJsDir(JS_DIR);
 		assertEquals("ExecutorVar", executor.getExecutorVar());
 		
 		Object res = executor.execute("test_defvar.js");

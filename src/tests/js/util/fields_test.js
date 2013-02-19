@@ -4,7 +4,7 @@ testCases(test,
 	
 	function checkInheritance() {
 		var numF = new util.NumHolder();
-		assert.that(numF instanceof util.Holder, eq(true));
+		assert.that(numF, isA(util.Holder));
 	},
 	
 	function checkHolderHolding() {
