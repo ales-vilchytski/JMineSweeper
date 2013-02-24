@@ -11,6 +11,17 @@ function beanMock(obj) {
 	return obj;
 }
 
+function generateArray(x, y) {
+	var arr = [];
+	for (var i = 0; i < x; ++i) {
+		arr.push([]);
+		for (var j = 0; j < y; ++j) {
+			arr[i].push({});
+		}
+	}
+	return arr;
+};
+
 var dir = attributes.get('testRunnerDir');
 
 $.include('prepare.js');
