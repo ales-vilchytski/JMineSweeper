@@ -1,7 +1,7 @@
 $.include('enum.js');
 $.include('score.js');
 $.include('lib/json2.js');
-$.include('util/fields.js');
+$.include('fields.js');
 
 //class Preferences, wraps Java Preferences
 function Preferences(key) {

@@ -25,5 +25,5 @@ function generateArray(x, y) {
 var dir = attributes.get('testRunnerDir');
 
 $.include('prepare.js');
-$.include('rhinounit_1_2_1/rhinoUnitUtil.js');
-$.execute('rhinounit_1_2_1/rhinoUnitAnt.js');
+//$.include('rhinounit_1_2_1/rhinoUnitUtil.js');
+//$.execute('rhinounit_1_2_1/rhinoUnitAnt.js');

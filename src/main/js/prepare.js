@@ -1,4 +1,4 @@
-$.include('_init.js');
+$.include('namespace.js');
 
 this.loadImage = function(path) {
 	var stream = $.getClass().getResourceAsStream(path);
