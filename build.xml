@@ -1,38 +1,119 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project default="jar" basedir=".">
+<project xmlns:ivy="antlib:org.apache.ivy.ant" 
+		 default="jar" basedir=".">
 	
-	<target name="jar" depends='test'>
-	    
-		<jar destfile="dist/minesweeper.jar" >
-		    <fileset dir="bin/main"/>
+	<property name='src' value='src'/>
+	<property name='lib' value='lib'/>
+	<property name='bin' value='bin'/>
+    <property name='dist' value='dist'/>
+    
+    <target name="resolve" description='Resolves and copies to lib all runtime dependencies'>
+    	<ivy:resolve file="ivy.xml" conf="runtime"/>
+        <ivy:retrieve pattern="${lib}/[artifact]-[revision].[ext]"/>
+    </target>
+		
+	<target name="resolve_test" description='Resolves and copies to lib test configuration dependencies'>
+        <ivy:resolve file="ivy.xml" conf="test"/>
+        <ivy:retrieve pattern="${lib}/[artifact]-[revision].[ext]"/>
+    </target>
+    
+    <path id="lib.cpath">
+		<fileset dir="${lib}">
+			<include name="**/*.jar"/>
+		</fileset>
+	</path>
+    
+    <target name='compile' description='Compiles all sources and copies .js to bin'>
+    	<mkdir dir="${bin}/main"/>
+    	<javac srcdir="${src}/main" destdir="${bin}/main"
+    		   classpathref="lib.cpath"
+    	/>
+        <copy todir="${bin}/main">
+			<fileset dir="${src}/main" includes="**/*.js"/>
+			<fileset dir="${src}/main" includes="**/*.properties"/>
+		</copy>
+		<copy todir='${bin}/main/resources'>
+			<fileset dir="${src}/main/resources" includes="**/*"/>
+		</copy>
+    </target>
+    
+	<target name="jar" depends='compile' description='Creates .jar with minesweeper files'>
+		<jar destfile="${dist}/minesweeper.jar" >
+		    <fileset dir="${bin}/main"/>
 		    <manifest>
-		     	<attribute  name="Main-Class"
+		     	<attribute 	name="Main-Class"
 		            		value="by.ales.minesweeper.Main"/>
 			</manifest>
 		</jar>
 	</target>
+
+	<target name='jar_with_dep' depends='jar' description='Creates jar with all dependencies in one jar'>
+		<jar destfile="${dist}/minesweeper_dep.jar" 
+			 duplicate="fail" 
+			 filesetmanifest="mergewithoutmain">
+		  <zipgroupfileset dir="${dist}" includes="**/*.jar" /> 
+		  <zipgroupfileset dir="${lib}" includes="**/*.jar" /> 
+		</jar>
+	</target>
 	
-	<property name='testdir' value='bin/tests'/>
+	<path id='built.cpath'>
+		<pathelement path='${bin}/main'/>
+		<pathelement path='${bin}/tests'/>
+		<path refid='lib.cpath'/>
+	</path>
 	
-	<taskdef name='jstest' 
-			 classname='by.ales.minesweeper.scripting.JTestExecutor' >
-		<classpath>
-			<pathelement path='bin/main'/>
-			<pathelement path='bin/tests'/>
-		</classpath>
-	</taskdef>
+	<target name='compile_tests' depends='compile' description='Compiles all tests and copies .js files to bin'>
+		<mkdir dir="${bin}/tests"/>
+		<javac srcdir="${src}/tests" destdir="${bin}/tests"
+    		   classpathref="built.cpath"
+    	/>
+        <copy todir="${bin}/tests">
+			<fileset dir="${src}/tests" includes="**/*.js"/>
+		</copy>
+	</target>
 	
-	<target name='test'>
+	<target name='test' depends='compile_tests' description='Compiles an executes all tests'>
+	<!--uncomment to use junit if there are Java classes to test
+		<mkdir dir='tmp'/>
+		<junit haltonfailure='yes' fork='yes' forkmode='once' tempdir='tmp'>
+			<classpath>
+				<path refid='built.cpath'/>
+			</classpath>
+			<formatter type="plain" usefile="false" />
+			<batchtest>
+				<fileset dir='${src}/tests'>
+					<include name='**/*Test.java'/>
+				</fileset>
+			</batchtest>
+		</junit>
+-->
+		<taskdef name='jstest' classname='by.ales.javascript.JSTestExecutor' >
+			<classpath refid='built.cpath'/>
+		</taskdef>
 		<jstest	options="{verbose:true, stackTrace:true}"
-				haltOnFirstFailure="false"
+				haltOnFirstFailure="true"
 				ignoredGlobalVars="JSON"
 				jsDir="/js"
-				prepareScript="prepare.js"
-				rhinoUnitDir="${testdir}/js/rhinounit_1_2_1">
-			<fileset dir="${testdir}/js">
-				<include name="*test.js"/>
+				beforeTestScript="start.js">
+			<fileset dir="${bin}/tests/js">
+				<include name="**/*_test.js"/>
 			</fileset>
 		</jstest>
+	</target>
+	
+	<target name='dist' depends='resolve,jar' description='Resolves runtime dependencies and creates packed jar'>
+		<echo>Distribution created</echo>
+	</target>
+	
+	<target name='dist_with_dep' depends='resolve,jar_with_dep' description='Created distibution with dependencies in one jar'>
+		<echo>Distribution created</echo>
+	</target>
+	
+	<target name='clean' description='Cleans up all out folders'>
+		<delete dir="${tmp}"/>
+		<delete dir="${bin}"/>
+    	<delete dir="${lib}"/>
+    	<delete dir="${dist}"/>
 	</target>
 	
 </project>

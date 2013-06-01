@@ -7,7 +7,7 @@ import java.util.prefs.Preferences;
 
 import javax.script.ScriptException;
 
-import by.ales.minesweeper.scripting.JScriptExecutor;
+import by.ales.javascript.JSExecutor;
 
 
 public class Main {
@@ -62,8 +62,9 @@ public class Main {
 			exc.printStackTrace();
 		}
 		
-		JScriptExecutor executor = new JScriptExecutor(init, var);
+		JSExecutor executor = new JSExecutor(var);
 		executor.setJsDir(jsDir);
+		executor.include(init);
 		executor.execute(main);
 	}
 }
