@@ -11,8 +11,6 @@
 		<conf name="test" extends="runtime"/>
 	</configurations>
 	<dependencies>
-		<dependency org="by.ales.javascript" name="jsexecutor" rev="latest.integration" conf="runtime->runtime"/>
-		<dependency org="by.ales.javascript" name="jstestexecutor" rev="latest.integration" conf="test->runtime"/>
-	<!--<dependency org="junit" name="junit" rev="4.6" conf="test->master"/> -->
+		<dependency org="org.mozilla" name="rhino" rev="1.7R4"/>
 	</dependencies>
 </ivy-module>

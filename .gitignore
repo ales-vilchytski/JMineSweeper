@@ -1,4 +1,4 @@
-tmp/
-bin/
-dist/
-lib/
+/tmp
+/bin
+/dist
+/lib

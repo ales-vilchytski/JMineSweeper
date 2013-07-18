@@ -1,6 +1,6 @@
-$.include('event.js');
-$.include('field.js');
-$.include('settings_window.js');
+var Event = require('event');
+var Field = require('field');
+var SettingsWindow = require('settings_window');
 
 //class MainWindow
 function MainWindow() {
@@ -162,3 +162,5 @@ function MainWindow() {
 		return String(input.getText()); //convert to JS String
 	};
 }
+
+exports.MainWindow = MainWindow;

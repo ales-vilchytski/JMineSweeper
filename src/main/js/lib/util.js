@@ -1,4 +1,63 @@
-$.include('utils.js');
+function loadImage(path) {
+	var stream = $.getClass().getResourceAsStream(path);
+	return javax.imageio.ImageIO.read(stream);
+};
+
+function pick(arg, def) {
+	return ((typeof arg) == 'undefined' ? def : arg);
+};
+
+function visitNeighbourCells(cellsArray, xx, yy, callback) {
+	var x = Number(xx), y = Number(yy);
+	for (var i = x - 2; ++i <= x + 1; ) {
+		for (var j = y - 2; ++j <= y + 1; ) {
+			if (i >= 0 && i < cellsArray.length &&
+				(j >= 0 && j < cellsArray[i].length) &&
+				!(i === x && j === y)) {
+				callback(cellsArray[i][j], i, j);
+			}
+		}
+	}
+}
+
+function copyArgsToArray() {
+	var args = [];
+	for (var i = 0; i < arguments.length; ++i) {
+		args.push(arguments[i]);
+	}
+	return args;
+}
+
+//class Enum
+function Enum(list) {
+	if (!list) {
+		list = this;
+	}
+	if (!(list instanceof Array)) { //object?
+		var props = [];
+		for (var i in list) {
+			props.push(i);
+		}
+		list = props;
+	}
+	for (var i in list) {
+		this[list[i]] = { 
+			str : list[i], 
+			toString : function() { 
+				return this.str; 
+			}
+		};
+	}
+	
+	this.toString = function() {
+		var str = [];
+		for (var i in this) {
+			str.push(i);
+		}
+		return str.join(',');
+	};
+	//add Object.freeze(this) here
+};
 
 //class Event
 function Event(_activatorKey) {
@@ -53,4 +112,10 @@ function Event(_activatorKey) {
 		}
 		return strs.join('\n');
 	};
-}
+};
+
+exports.loadImage = loadImage;
+exports.Enum = Enum;
+exports.copyArgsToArray = copyArgsToArray;
+exports.visitNeighbourCells = visitNeighbourCells;
+exports.Event = Event;

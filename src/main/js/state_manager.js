@@ -1,4 +1,4 @@
-$.include('event.js');
+var State = require('lib/util').State;
 
 //class StateManager - essential part of finite state machine
 function StateManager(initialState) {
@@ -45,3 +45,5 @@ function StateManager(initialState) {
 		return strs.join('\n');
 	};
 }
+
+exports.StateManager = StateManager;

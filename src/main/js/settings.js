@@ -12,3 +12,5 @@ function Settings(x, y, mines) {
 				this.mines === other.mines;
 	};
 }
+
+exports.Settings = Settings;

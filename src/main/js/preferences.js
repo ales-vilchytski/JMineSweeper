@@ -1,7 +1,6 @@
-$.include('enum.js');
-$.include('score.js');
-$.include('lib/json2.js');
-$.include('fields.js');
+var util = require('util');
+var Score = require('score').Score;
+var fields = require('lib/fields');
 
 //class Preferences, wraps Java Preferences
 function Preferences(key) {
@@ -18,16 +17,16 @@ function Preferences(key) {
 	 */
 	
 	var prefs = java.util.prefs.Preferences.userNodeForPackage(
-			java.lang.Class.forName(key, true, $.getClass().getClassLoader()));
+			java.lang.Class.forName(key));
 	
 	var FIELDS = {	//maps field name to key in preferences
-		X_SIZE : new util.NumHolder('X', 5, 2, 20),
-		Y_SIZE : new util.NumHolder('Y', 5, 2, 20),
-		MINES : new util.NumHolder('Mines', 5, 1, 399),
-		CELL_SIZE : new util.NumHolder('CellSize', 50, 10, 120),
-		FONT_SIZE : new util.NumHolder('FontSize', 30, 5, 120),
-		MAX_SCORES : new util.NumHolder('MaxScores', 5, 1, 20),		
-		SCORES : new util.Holder('Scores', //add accessors later by hand
+		X_SIZE : new fields.NumHolder('X', 5, 2, 20),
+		Y_SIZE : new fields.NumHolder('Y', 5, 2, 20),
+		MINES : new fields.NumHolder('Mines', 5, 1, 399),
+		CELL_SIZE : new fields.NumHolder('CellSize', 50, 10, 120),
+		FONT_SIZE : new fields.NumHolder('FontSize', 30, 5, 120),
+		MAX_SCORES : new fields.NumHolder('MaxScores', 5, 1, 20),		
+		SCORES : new fields.Holder('Scores', //add accessors later by hand
 					[new Score('Master', 1000), 
 				     new Score('Beginner', 500),
 				     new Score('Rookie', 100)]),

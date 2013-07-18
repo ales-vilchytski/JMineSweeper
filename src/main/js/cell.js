@@ -1,4 +1,4 @@
-$.include('enum.js');
+var Enum = require('util').Enum;
 
 //class Cell
 function Cell(clicked, content, mark) {
@@ -33,3 +33,6 @@ Cell.Mark = {
 	QUESTION: ''
 };
 Enum.apply(Cell.Mark);
+
+
+exports.Cell = Cell;

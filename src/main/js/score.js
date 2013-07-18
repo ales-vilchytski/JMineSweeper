@@ -21,3 +21,5 @@ function Score(_name, _score) {
 		return this.getName() + ' ' + this.getScore();
 	};
 }
+
+exports.Score = Score;

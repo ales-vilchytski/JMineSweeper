@@ -1,8 +1,6 @@
-$.include('utils.js');
-$.include('event.js');
-$.include('state_manager.js');
-$.include('enum.js');
-$.include('cell.js');
+var util = require('lib/util');
+var StateManager = require('state_manager').StateManager;
+var Cell = require('cell').Cell;
 
 //class Sweeper
 function Sweeper(_x, _y, _mines) {	
@@ -63,7 +61,7 @@ function Sweeper(_x, _y, _mines) {
 			for (var j = 0; j < y; ++j) {
 				if (cells[i][j].content != Cell.Content.MINE) {
 					var count = 0;
-					visitNeighbourCells(cells, i, j, 
+					util.visitNeighbourCells(cells, i, j, 
 						function(cell, x, y) {
 							if (cell.content === Cell.Content.MINE) { 
 								++count;
@@ -79,19 +77,19 @@ function Sweeper(_x, _y, _mines) {
 	//Events
 	{
 		var eventKey = new Object();
-		var minesRemainedChangedEvent = new Event(eventKey);
+		var minesRemainedChangedEvent = new util.Event(eventKey);
 		this.getMinesRemainedChangedEvent = function() { return minesRemainedChangedEvent; };
 		
-		var secondsChangedEvent = new Event(eventKey);
+		var secondsChangedEvent = new util.Event(eventKey);
 		this.getSecondsChangedEvent = function() { return secondsChangedEvent; };
 		
-		var refreshCellEvent = new Event(eventKey);
+		var refreshCellEvent = new util.Event(eventKey);
 		this.getRefreshCellEvent = function() { return refreshCellEvent; };
 		
-		var gameOverEvent = new Event(eventKey);
+		var gameOverEvent = new util.Event(eventKey);
 		this.getGameOverEvent = function() { return gameOverEvent; };
 		
-		var gameFinishedEvent = new Event(eventKey);
+		var gameFinishedEvent = new util.Event(eventKey);
 		this.getGameFinishedEvent = function() { return gameFinishedEvent; };
 	}//end events
 	

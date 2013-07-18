@@ -1,4 +1,8 @@
-$.include('game.js');
+var Game = require('game').Game;
 
-var game = new Game(minesweeper.globals.preferences);
+this.globals = {
+	preferences : new Preferences('by.ales.minesweeper.Main')
+};
+
+var game = new Game(globals.preferences);
 game.start();

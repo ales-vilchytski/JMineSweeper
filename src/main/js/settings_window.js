@@ -1,6 +1,5 @@
-$.include('settings.js');
-$.include('utils.js');
-$.include('event.js');
+var Event = require('event').Event;
+var Settings = require('settings').Settings;
 
 //class SettingsWindow
 function SettingsWindow(parent) {
@@ -103,3 +102,5 @@ function SettingsWindow(parent) {
 		settingsWindow.setVisible(false);
 	};
 }
+
+exports.SettingsWindow = SettingsWindow;

@@ -1,7 +1,7 @@
-$.include('sweeper.js');
-$.include('settings.js');
-$.include('main_window.js');
-$.include('preferences.js');
+var Sweeper = require('sweeper');
+var Settings = require('settings');
+var MainWindow = require('main_window');
+var Preferences = require('preferences');
 
 //class Game
 function Game(preferences) {
@@ -54,3 +54,5 @@ function Game(preferences) {
 	}
 	
 }
+
+exports.Game = Game;

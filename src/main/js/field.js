@@ -1,7 +1,6 @@
-$.include('utils.js');
-$.include('event.js');
-$.include('cell.js');
-$.include('sweeper.js');
+var util = require('lib/util');
+var Cell = require('cell');
+var Sweeper = require('sweeper');
 
 //class Field
 function Field(cells, cellSize, fontSizePx) {
@@ -40,7 +39,7 @@ function Field(cells, cellSize, fontSizePx) {
 	};
 	
 	function icon(path) { //local icon creator
-		return new swing.ImageIcon(loadImage(path).
+		return new swing.ImageIcon(util.loadImage(path).
 			getScaledInstance(
 				cellSize - cellSize/5, //+ borders
 				cellSize - cellSize/5, 
@@ -177,3 +176,5 @@ function Field(cells, cellSize, fontSizePx) {
 		panel.setVisible(false);
 	};
 }
+
+exports.Field = Field;
