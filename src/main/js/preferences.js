@@ -1,4 +1,4 @@
-var util = require('util');
+var util = require('lib/util');
 var Score = require('score').Score;
 var fields = require('lib/fields');
 
@@ -98,3 +98,5 @@ function Preferences(key) {
 	};
 	
 }
+
+exports.Preferences = Preferences;

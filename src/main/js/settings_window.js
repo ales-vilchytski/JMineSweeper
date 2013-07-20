@@ -1,4 +1,4 @@
-var Event = require('event').Event;
+var Event = require('lib/util').Event;
 var Settings = require('settings').Settings;
 
 //class SettingsWindow

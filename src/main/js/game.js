@@ -1,7 +1,8 @@
-var Sweeper = require('sweeper');
-var Settings = require('settings');
-var MainWindow = require('main_window');
-var Preferences = require('preferences');
+var Sweeper = require('sweeper').Sweeper;
+var Settings = require('settings').Settings;
+var MainWindow = require('main_window').MainWindow;
+var Preferences = require('preferences').Preferences;
+var Score = require('score').Score;
 
 //class Game
 function Game(preferences) {

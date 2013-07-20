@@ -1,4 +1,4 @@
-var State = require('lib/util').State;
+var Event = require('lib/util').Event;
 
 //class StateManager - essential part of finite state machine
 function StateManager(initialState) {

@@ -1,4 +1,4 @@
-var Enum = require('util').Enum;
+var Enum = require('lib/util').Enum;
 
 //class Cell
 function Cell(clicked, content, mark) {

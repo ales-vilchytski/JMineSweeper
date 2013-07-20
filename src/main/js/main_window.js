@@ -1,6 +1,6 @@
-var Event = require('event');
-var Field = require('field');
-var SettingsWindow = require('settings_window');
+var Event = require('lib/util').Event;
+var Field = require('field').Field;
+var SettingsWindow = require('settings_window').SettingsWindow;
 
 //class MainWindow
 function MainWindow() {

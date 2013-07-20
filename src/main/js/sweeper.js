@@ -183,7 +183,7 @@ function Sweeper(_x, _y, _mines) {
 				   notClickedCells == mines) {
 			stateManager.changeState(Sweeper.State.FINISH);
 		} else if (content === Cell.Content.NONE) {
-			visitNeighbourCells(cells, x, y, 
+			util.visitNeighbourCells(cells, x, y, 
 				function(cell, m, n) {
 					_clickCell(m, n);
 				});
@@ -244,4 +244,6 @@ Sweeper.State = {
 	GAME_OVER: '',
 	FINISH: ''
 }; 
-Enum.apply(Sweeper.State);
+util.Enum.apply(Sweeper.State);
+
+exports.Sweeper = Sweeper;

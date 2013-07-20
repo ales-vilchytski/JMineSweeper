@@ -1,7 +1,6 @@
 package by.ales.minesweeper;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URI;
@@ -65,8 +64,8 @@ public class Main {
 		}
 		
 		List<URI> lookupPaths = new LinkedList<URI>();
-		URI uri = Main.class.getResource(jsDir).toURI();
-		lookupPaths.add(uri);
+		URI mainUri = Main.class.getResource(jsDir).toURI();
+		lookupPaths.add(mainUri);
 		
 		ContextFactory fact = new ContextFactory();
 		Context ctx = fact.enterContext();

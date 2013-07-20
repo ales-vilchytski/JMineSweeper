@@ -1,6 +1,7 @@
 var util = require('lib/util');
-var Cell = require('cell');
-var Sweeper = require('sweeper');
+var Event = util.Event;
+var Cell = require('cell').Cell;
+var Sweeper = require('sweeper').Sweeper;
 
 //class Field
 function Field(cells, cellSize, fontSizePx) {
@@ -27,7 +28,7 @@ function Field(cells, cellSize, fontSizePx) {
 		
 	var _cells = [];
 	var createMouseClickListener = function(x, y) {
-		return function(mouseEvent) {
+		var process = function(mouseEvent) {
 			if (mouseEvent.getID() === mouseEvent.MOUSE_PRESSED) {
 				if (swing.SwingUtilities.isLeftMouseButton(mouseEvent)) {
 					clickCellEvent.fire(eventKey, x, y);
@@ -35,6 +36,13 @@ function Field(cells, cellSize, fontSizePx) {
 					markCellEvent.fire(eventKey, x, y);
 				};
 			}
+		};
+		return {
+			mouseClicked : function(e) { process(e); }, 
+			mouseEntered : function(e) { },
+			mouseExited : function(e) { },
+			mousePressed : function(e) { process(e); }, 
+			mouseReleased : function(e) { process(e); },
 		};
 	};
 	

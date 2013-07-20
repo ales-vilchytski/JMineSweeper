@@ -1,3 +1,5 @@
+var pick = require('lib/util').pick;
+
 //Class score
 function Score(_name, _score) {
 	

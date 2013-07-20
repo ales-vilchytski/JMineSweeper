@@ -1,4 +1,5 @@
 var Game = require('game').Game;
+var Preferences = require('preferences').Preferences;
 
 this.globals = {
 	preferences : new Preferences('by.ales.minesweeper.Main')

@@ -1,5 +1,5 @@
 function loadImage(path) {
-	var stream = $.getClass().getResourceAsStream(path);
+	var stream = java.lang.Class.forName('by.ales.minesweeper.Main').getResourceAsStream(path);
 	return javax.imageio.ImageIO.read(stream);
 };
 
@@ -115,6 +115,7 @@ function Event(_activatorKey) {
 };
 
 exports.loadImage = loadImage;
+exports.pick = pick;
 exports.Enum = Enum;
 exports.copyArgsToArray = copyArgsToArray;
 exports.visitNeighbourCells = visitNeighbourCells;
