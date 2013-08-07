@@ -51,8 +51,8 @@
 		<jar destfile="${dist}/minesweeper_dep.jar" 
 			 duplicate="fail" 
 			 filesetmanifest="mergewithoutmain">
-		  <zipgroupfileset dir="${dist}" includes="**/*.jar" /> 
 		  <zipgroupfileset dir="${lib}" includes="**/*.jar" /> 
+		  <zipgroupfileset dir="${dist}" includes="**/*.jar" />
 		</jar>
 	</target>
 	

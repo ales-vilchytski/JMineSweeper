@@ -1,5 +1,5 @@
 function loadImage(path) {
-	var stream = java.lang.Class.forName('by.ales.minesweeper.Main').getResourceAsStream(path);
+	var stream = _mainClass.getResourceAsStream(path);
 	return javax.imageio.ImageIO.read(stream);
 };
 

@@ -2,8 +2,16 @@ var util = require('lib/util');
 var Score = require('score').Score;
 var fields = require('lib/fields');
 
-//class Preferences, wraps Java Preferences
-function Preferences(key) {
+/**
+ * Class Preferences, wraps Java Preferences
+ * @param pref 
+ *        java.util.prefs.Preferences instance or object supporting following methods:
+ *        <ul>
+ *          <li> get(String key, String default)
+ *          <li> put(String key, String value)
+ *        </ul>
+ */
+function Preferences(prefs) {
 	
 	/**
 	 * Because the most of time we need simple fields to save\load let's use next approach:
@@ -15,9 +23,6 @@ function Preferences(key) {
 	 * Drawback is that autocomplete doesn't recognize these fields.
 	 * In complicated cases custom accessors should be created. 
 	 */
-	
-	var prefs = java.util.prefs.Preferences.userNodeForPackage(
-			java.lang.Class.forName(key));
 	
 	var FIELDS = {	//maps field name to key in preferences
 		X_SIZE : new fields.NumHolder('X', 5, 2, 20),
