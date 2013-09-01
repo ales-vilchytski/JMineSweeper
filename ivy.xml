@@ -12,5 +12,6 @@
 	</configurations>
 	<dependencies>
 		<dependency org="by.ales.javascript" name="jsexecutor" rev="latest.integration"/>
+		<dependency org="by.ales.javascript" name="jstestexecutor" rev="latest.integration" conf="test->runtime"/>
 	</dependencies>
 </ivy-module>
