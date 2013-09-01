@@ -91,7 +91,7 @@ function Preferences(prefs) {
 				}
 			}
 			forJson.sort(function(left, right) {
-				return left.score < right.score; //descending
+				return right.score - left.score; //descending
 			});
 			forJson = forJson.slice(0, this.getMaxScores());
 			

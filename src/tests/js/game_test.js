@@ -1,10 +1,12 @@
-$.include('game.js');
-$.include('event.js');
+var Game = require('game').Game;
+var Event = require('lib/util').Event;
+var beanMock = require('lib/test_util').beanMock;
+var assert = require('assert');
 
 var currentMainWindow = null; //static var with last created mainWindow
 
-//mocks
-this.MainWindow = function() {
+//========= mocks ==============
+this.MainWindowMock = function() {
 	this.SettingsWindow = beanMock({
 		Settings : 'mock', 
 		SettingsChangedEvent : new Event(), 
@@ -37,7 +39,7 @@ this.MainWindow = function() {
 
 var currentSweeper = null; //static var with last created sweeper
 
-this.Sweeper = function(x, y, mines) {
+this.SweeperMock = function(x, y, mines) {
 	this.GameFinishedEvent = new Event();
 	this.X = x;
 	this.Y = y;
@@ -51,92 +53,112 @@ this.Sweeper = function(x, y, mines) {
 	currentSweeper = this;
 };
 
+//===========================
+//========= tests ===========
+
 var preferences = null;
 var game = null;
 
-testCases(test,
-	function setUp() {
-	 	currentSweeper = null;
-	 	currentMainWindow = null;
-	 	preferences = beanMock({
-	 		X : 3,
-	 		Y : 3,
-	 		Mines : 1,
-	 		Scores : [],
-	 		CellSize : 10,
-	 		FontSize : 10
-	 	});
-	 	
-	 	game = new Game(preferences);
-	},
-	
-	function checkCreationOfSweeperAndMainWindow() {
-		game.start();
-		
-		assert.that(currentSweeper, not(eq(null)));
-		assert.that(currentMainWindow, not(eq(null)));
-		
-		assert.that(currentSweeper.X, eq(preferences.X));
-		assert.that(currentSweeper.Y, eq(preferences.Y));
-		assert.that(currentSweeper.Mines, eq(preferences.Mines));
-		assert.that(currentSweeper.Seconds, eq(5));
-		
-		assert.that(currentMainWindow.CellSize, eq(preferences.CellSize));
-		assert.that(currentMainWindow.FontSize, eq(preferences.FontSize));
-		assert.that(currentMainWindow.Sweeper, eq(currentSweeper));
-	},
-	
-	function checkMainWindowShowOnStart() {
-		game.start();
-		
-		assert.that(currentMainWindow.Showed, eq(true));
-	},
-	
-	function checkDisposingSweeper() {
-		game.start();
-		var prevSweeper = currentSweeper;
-		game.start();
-		
-		assert.that(prevSweeper.Disposed, eq(true));
-		assert.that(currentSweeper.Disposed, eq(false));
-	},
-	
-	function checkNewGameEventHandling() {
-		currentMainWindow.NewGameEvent.fire();
-		
-		//to check if new game created change preferences and check new values
-		var x = preferences.X + 1;
-		var cellSize = preferences.CellSize + 10;
-		preferences.setX(x);
-		preferences.setCellSize(cellSize);
-		
-		currentMainWindow.NewGameEvent.fire();
-				
-		assert.that(currentSweeper.X, eq(x));
-		assert.that(currentMainWindow.CellSize, eq(cellSize));
-	},
-	
-	function checkNewSettingsEventHandling() {
-		game.start();
-		
-		var x = preferences.X + 1;
-		var cellSize = preferences.CellSize + 10;
-		preferences.setX(x);
-		preferences.setCellSize(cellSize);
-		
-		currentMainWindow.SettingsWindow.SettingsChangedEvent.fire();
+function setUp() {
+    currentSweeper = null;
+    currentMainWindow = null;
+    preferences = beanMock({
+        X : 3,
+        Y : 3,
+        Mines : 1,
+        Scores : [],
+        CellSize : 10,
+        FontSize : 10
+    });
 
-		assert.that(currentSweeper.X, eq(x));
-		assert.that(currentMainWindow.CellSize, eq(cellSize));
-	},
+    game = new Game(preferences, SweeperMock, MainWindowMock);
+};
+
+exports['test creation of sweeper and main window'] = function() {
+    setUp();
+    
+    game.start();
+
+    assert.notEqual(currentSweeper, null);
+    assert.notEqual(currentMainWindow, null);
+
+    assert.equal(currentSweeper.X, preferences.X);
+    assert.equal(currentSweeper.Y, preferences.Y);
+    assert.equal(currentSweeper.Mines, preferences.Mines);
+    assert.equal(currentSweeper.Seconds, 5);
+
+    assert.equal(currentMainWindow.CellSize, preferences.CellSize);
+    assert.equal(currentMainWindow.FontSize, preferences.FontSize);
+    assert.equal(currentMainWindow.Sweeper, currentSweeper);
+};
+
+exports['test main window show on start'] = function() {
+    setUp();
+    
+    game.start();
+
+    assert.ok(currentMainWindow.Showed);
+};
+
+exports['test disposing sweeper'] = function() {
+    setUp();
+    
+    game.start(); //force creation of 1st sweeper
+    
+    var prevSweeper = currentSweeper;
+    game.start(); //force creation of 2nd sweeper
+    
+    assert.notEqual(currentSweeper, prevSweeper);
+    assert.ok(prevSweeper.Disposed);
+};
+
+exports['test new game event handling'] = function() {
+    setUp();
+    
+    currentMainWindow.NewGameEvent.fire();
+
+    // to check if new game created change preferences and check new values
+    //and check creation of new sweeper
+    var x = preferences.X + 1;
+    var cellSize = preferences.CellSize + 10;
+    preferences.setX(x);
+    preferences.setCellSize(cellSize);
+    var prevSweeper = currentSweeper;
+
+    currentMainWindow.NewGameEvent.fire();
+
+    assert.equal(currentSweeper.X, x);
+    assert.equal(currentMainWindow.CellSize, cellSize);
+    assert.notEqual(currentSweeper, prevSweeper);
+};
+
+exports['test new settings event starts new game'] = function() {
+    setUp();
+    
+    game.start();
+
+    var x = preferences.X + 1;
+    var cellSize = preferences.CellSize + 10;
+    preferences.setX(x);
+    preferences.setCellSize(cellSize);
+    var prevSweeper = currentSweeper;
+
+    currentMainWindow.SettingsWindow.SettingsChangedEvent.fire();
+
+    assert.notEqual(currentSweeper, prevSweeper);
+    assert.equal(currentSweeper.X, x);
+    assert.equal(currentMainWindow.CellSize, cellSize);
+};
+
+exports['test game finished event finish game with score if any'] = function() {
+    setUp();
+    
+    game.start();
+
+    currentSweeper.GameFinishedEvent.fire();
+
+    assert.equal(currentMainWindow.EnterNameDialogShowed, true);
+    assert.notEqual(currentMainWindow.Score, null);
+    assert.equal(preferences.Scores[0].getName(), 'ohMyName');
+};
 	
-	function checkGameFinishedEventHandling() {
-		game.start();
-		
-		currentSweeper.GameFinishedEvent.fire();
-		
-		assert.that(currentMainWindow.EnterNameDialogShowed, eq(true));
-		assert.that(currentMainWindow.Score, not(eq(null)));
-		assert.that(preferences.Scores[0].getName(), eq('ohMyName'));
-	}
-);

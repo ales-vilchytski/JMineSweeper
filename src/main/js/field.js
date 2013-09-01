@@ -46,8 +46,13 @@ function Field(cells, cellSize, fontSizePx) {
 		};
 	};
 	
+	function loadImage(path) {
+	    var stream = (new java.lang.Object).getClass().getResourceAsStream(path);
+	    return javax.imageio.ImageIO.read(stream);
+	};
+	
 	function icon(path) { //local icon creator
-		return new swing.ImageIcon(util.loadImage(path).
+		return new swing.ImageIcon(loadImage(path).
 			getScaledInstance(
 				cellSize - cellSize/5, //+ borders
 				cellSize - cellSize/5, 

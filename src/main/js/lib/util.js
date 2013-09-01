@@ -1,8 +1,3 @@
-function loadImage(path) {
-	var stream = _mainClass.getResourceAsStream(path);
-	return javax.imageio.ImageIO.read(stream);
-};
-
 function pick(arg, def) {
 	return ((typeof arg) == 'undefined' ? def : arg);
 };
@@ -114,9 +109,8 @@ function Event(_activatorKey) {
 	};
 };
 
-exports.loadImage = loadImage;
 exports.pick = pick;
-exports.Enum = Enum;
-exports.copyArgsToArray = copyArgsToArray;
 exports.visitNeighbourCells = visitNeighbourCells;
+exports.copyArgsToArray = copyArgsToArray;
+exports.Enum = Enum;
 exports.Event = Event;

@@ -87,14 +87,10 @@
 			</batchtest>
 		</junit>
 -->
-		<taskdef name='jstest' classname='by.ales.javascript.JSTestExecutor' >
+		<taskdef name='jstest' classname='by.ales.javascript.RhinoTestExecutor' >
 			<classpath refid='built.cpath'/>
 		</taskdef>
-		<jstest	options="{verbose:true, stackTrace:true}"
-				haltOnFirstFailure="true"
-				ignoredGlobalVars="JSON"
-				jsDir="/js"
-				beforeTestScript="start.js">
+		<jstest>
 			<fileset dir="${bin}/tests/js">
 				<include name="**/*_test.js"/>
 			</fileset>
